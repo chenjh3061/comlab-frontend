@@ -1,18 +1,19 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-  </div>
+  <div class="home">欢迎来到计算机系实验管理平台</div>
+  <a-card>
+    <a-calendar v-model="value" />
+    select: {{ value }}
+  </a-card>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   name: "HomeView",
-  components: {
-    HelloWorld,
+  setup() {
+    const value = ref<string | Date>(new Date());
+    return value;
   },
 });
 </script>

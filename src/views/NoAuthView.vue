@@ -1,11 +1,7 @@
 <template>
-  <div>无权限</div>
+  <div>抱歉，您暂无权限查看此内容</div>
 </template>
 
-<script setup="ts">
-export default {
-  name: "NoAuth",
-};
-</script>
+<script setup="ts"></script>
 
 <style scoped></style>

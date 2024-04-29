@@ -1,13 +1,9 @@
-<template>
-$END$
-</template>
+<template>123</template>
 
 <script>
 export default {
-name: "FixMaintain"
-}
+  name: "FixMaintain",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

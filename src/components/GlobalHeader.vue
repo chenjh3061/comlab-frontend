@@ -1,143 +1,98 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br />
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener"
-        >vue-cli documentation</a
-      >.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel"
-          target="_blank"
-          rel="noopener"
-          >babel</a
+  <a-row id="globalHeader" class="grid-demo" align="center" :wrap="false">
+    <a-col flex="100px"></a-col>
+    <a-col flex="auto">
+      <a-menu
+        mode="horizontal"
+        :selected-keys="selectedKeys"
+        @menu-item-click="doMenuClick"
+      >
+        <a-menu-item
+          key="0"
+          :style="{ padding: 0, marginRight: '38px' }"
+          disabled
         >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router"
-          target="_blank"
-          rel="noopener"
-          >router</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-vuex"
-          target="_blank"
-          rel="noopener"
-          >vuex</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint"
-          target="_blank"
-          rel="noopener"
-          >eslint</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-typescript"
-          target="_blank"
-          rel="noopener"
-          >typescript</a
-        >
-      </li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li>
-        <a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a>
-      </li>
-      <li>
-        <a href="https://forum.vuejs.org" target="_blank" rel="noopener"
-          >Forum</a
-        >
-      </li>
-      <li>
-        <a href="https://chat.vuejs.org" target="_blank" rel="noopener"
-          >Community Chat</a
-        >
-      </li>
-      <li>
-        <a href="https://twitter.com/vuejs" target="_blank" rel="noopener"
-          >Twitter</a
-        >
-      </li>
-      <li>
-        <a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a>
-      </li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li>
-        <a href="https://router.vuejs.org" target="_blank" rel="noopener"
-          >vue-router</a
-        >
-      </li>
-      <li>
-        <a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-devtools#vue-devtools"
-          target="_blank"
-          rel="noopener"
-          >vue-devtools</a
-        >
-      </li>
-      <li>
-        <a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener"
-          >vue-loader</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-          rel="noopener"
-          >awesome-vue</a
-        >
-      </li>
-    </ul>
-  </div>
+          <div class="title-bar">
+            <img
+              class="logo"
+              src="../assets/school_logo.png"
+              alt="school_logo"
+            />
+            <div class="title">计算机系实验管理平台</div>
+          </div>
+        </a-menu-item>
+        <a-menu-item v-for="item in visibleRoutes" :key="item.path">
+          {{ item.name }}
+        </a-menu-item>
+      </a-menu>
+    </a-col>
+    <a-col flex="100px">
+      <div>{{ $store.state.user?.loginUser?.username ?? "未登录" }}</div>
+    </a-col>
+  </a-row>
+
+  <div></div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { routes } from "@/router/routes";
+import { useRouter } from "vue-router";
+import { ref } from "vue";
+import { useStore } from "vuex";
+import checkAccess from "@/access/checkAccess";
 
-export default defineComponent({
-  name: "HelloWorld",
-  props: {
-    msg: String,
-  },
+const router = useRouter();
+const store = useStore();
+const loginUser = store.state.user.loginUser;
+
+// 展示在菜单的路由数组
+const visibleRoutes = routes.filter((item, index) => {
+  if (item.meta?.hideInMenu) {
+    return false;
+  }
+  if (!checkAccess(loginUser, item.meta?.access as string)) {
+    return false;
+  }
+  return true;
 });
+
+//路由跳转后更新选中的菜单项
+router.afterEach((to, from, failure) => {
+  selectedKeys.value = [to.path];
+});
+
+//默认主页
+const selectedKeys = ref(["/"]);
+const doMenuClick = (key: string) => {
+  router.push({
+    path: key,
+  });
+};
+
+console.log(store.state.user.loginUser);
+
+// setTimeout(() => {
+//   //dispatch调用，写路径名+方法名
+//   store.dispatch("user/getLoginUser", {
+//     userName: "123456",
+//     role: 'admin',
+//   });
+// }, 3000);
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+.title-bar {
+  display: flex;
+  align-items: center;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
+.title {
+  color: #444;
+  margin-left: 16px;
 }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
+.logo {
+  height: 48px;
 }
 </style>

@@ -1,13 +1,9 @@
-<template>
-$END$
-</template>
+<template>123</template>
 
 <script>
 export default {
-name: "LabApplyView"
-}
+  name: "LabApplyView",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

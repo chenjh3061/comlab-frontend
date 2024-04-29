@@ -14,38 +14,26 @@
           mode="pop"
           show-collapse-button
           theme="dark"
-          :default-selected-keys="['/admin/semester']"
+          :default-selected-keys="['/student/apply']"
           @click="handleMenuClick"
         >
-          <a-menu-item key="/admin/semester">
+          <a-menu-item key="/student/apply">
             <template #icon>
               <icon-apps></icon-apps>
             </template>
-            <router-link to="/admin/semester">学期管理</router-link>
+            <router-link to="/student/apply">实验室借用申请</router-link>
           </a-menu-item>
-          <a-menu-item key="/admin/class">
-            <template #icon>
-              <icon-at></icon-at>
-            </template>
-            <router-link to="/admin/class">课程管理</router-link>
-          </a-menu-item>
-          <a-menu-item key="/admin/lab">
-            <template #icon>
-              <icon-bulb></icon-bulb>
-            </template>
-            <router-link to="/admin/lab">实验室管理</router-link>
-          </a-menu-item>
-          <a-menu-item key="/admin/user">
+          <a-menu-item key="/student/practice">
             <template #icon>
               <icon-user></icon-user>
             </template>
-            <router-link to="/admin/user">用户管理</router-link>
+            <router-link to="/student/practice">练习天地</router-link>
           </a-menu-item>
         </a-menu>
       </div>
     </a-layout-sider>
     <a-layout-content :style="{ marginLeft: '100px', padding: '24px' }">
-      <h1>管理员操作</h1>
+      <h1>学生界面</h1>
       <router-view></router-view>
     </a-layout-content>
   </a-layout>
@@ -53,19 +41,12 @@
 
 <script lang="ts">
 import { defineComponent, ref, Ref } from "vue";
-import {
-  IconApps,
-  IconAt,
-  IconBulb,
-  IconUser,
-} from "@arco-design/web-vue/es/icon";
+import { IconApps, IconUser } from "@arco-design/web-vue/es/icon";
 
 export default defineComponent({
-  name: "AdminView",
+  name: "StudentView",
   components: {
     IconApps,
-    IconAt,
-    IconBulb,
     IconUser,
   },
   setup() {

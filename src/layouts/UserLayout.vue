@@ -1,8 +1,11 @@
 <template>
-  <div id="basicLayout">
+  <div id="userLayout">
     <a-layout style="min-height: 100vh">
       <a-layout-header class="header">
-        <global-header></global-header>
+        <a-space
+          ><img src="../assets/school_logo.png" class="logo" />
+          <div>计算机系实验管理平台</div>
+        </a-space>
       </a-layout-header>
       <a-layout-content class="content">
         <router-view />
@@ -13,22 +16,25 @@
 </template>
 
 <style>
-#basicLayout {
+#userLayout {
 }
 
-#basicLayout .header {
+#userLayout .header {
+  margin-top: 16px;
   background: dodgerblue;
-  margin-bottom: 10px;
   box-shadow: #eee 1px 1px 5px;
 }
 
-#basicLayout .content {
+#userLayout .logo {
+}
+
+#userLayout .content {
   background: linear-gradient(to right, #aaa, #fff);
   margin-bottom: 10px;
   padding: 20px;
 }
 
-#basicLayout .footer {
+#userLayout .footer {
   background: #efefef;
   margin-bottom: 10px;
   padding: 16px;
@@ -40,6 +46,4 @@
 }
 </style>
 
-<script setup lang="ts">
-import GlobalHeader from "@/components/GlobalHeader.vue";
-</script>
+<script setup lang="ts"></script>

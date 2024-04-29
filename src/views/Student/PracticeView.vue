@@ -1,5 +1,8 @@
 <template>
-  <MdEditor :value="value" :handle-change="onChange" />
+  <div class="editor">
+    <span>自由练习场</span>
+    <MdEditor :value="value" :handle-change="onChange" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -12,4 +15,8 @@ const onChange = (v: string) => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.editor {
+  max-width: 1700px;
+}
+</style>
