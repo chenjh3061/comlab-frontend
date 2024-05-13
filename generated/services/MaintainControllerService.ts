@@ -131,35 +131,45 @@ export class MaintainControllerService {
 
   /**
    * @param labId
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
   public static getMaintainsByLabId(
-    labId: number
+    labId: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/maintain/getMaintainsByLabId",
       query: {
         "labId": labId
-      }
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
   /**
    * @param labAdminId
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
   public static getMaintainsByLabAdminId(
-    labAdminId: number
+    labAdminId: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/maintain/getMaintainsByLabAdminId",
       query: {
         "labAdminId": labAdminId
-      }
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 

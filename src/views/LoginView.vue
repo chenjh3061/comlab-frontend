@@ -1,7 +1,7 @@
 <template>
   <div id="userLoginView">
     <a-card>
-      <div>欢迎登录！</div>
+      <div id="welcomeText">欢迎来到计算机系实验管理平台！</div>
       <a-form
         style="max-width: 480px; margin: 0 auto"
         label-align="left"
@@ -22,11 +22,11 @@
             placeholder="请输入密码"
           />
         </a-form-item>
-        <a-radio-group>
-          <a-radio>管理员</a-radio>
-          <a-radio>教师</a-radio>
-          <a-radio>实验员</a-radio>
-          <a-radio>学生</a-radio>
+        <a-radio-group v-model="userRole">
+          <a-radio value="0">管理员</a-radio>
+          <a-radio value="2">教师</a-radio>
+          <a-radio value="3">实验员</a-radio>
+          <a-radio value="1">学生</a-radio>
         </a-radio-group>
         <a-form-item>
           <a-button type="primary" html-type="submit" style="width: 120px"
@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import message from "@arco-design/web-vue/es/message";
 import { UserControllerService, UserLoginDTO } from "../../generated";
 import { useRouter } from "vue-router";
@@ -53,7 +53,7 @@ const loginForm = reactive<UserLoginDTO>({
   username: "",
   password: "",
 });
-
+const userRole = ref();
 /**
  * 提交表单实现登录
  * @param data
@@ -63,7 +63,7 @@ const handleSubmit = async () => {
   const res = await UserControllerService.login(loginForm);
   console.log(res);
   if (res.status === 100) {
-    alert("登录成功" + JSON.stringify(loginForm));
+    alert("登录成功!");
     localStorage.setItem("token", res.data?.jwtToken || " ");
     console.log(localStorage.getItem("token"));
     await store.dispatch("/user/getLoginUser");
@@ -97,4 +97,14 @@ const handleSubmit = async () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+#welcomeText {
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI",
+    "HelveticaNeue-Light", system-ui, "Ubuntu", "Droid Sans", sans-serif;
+  font-size: 20px;
+}
+</style>

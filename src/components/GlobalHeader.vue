@@ -27,7 +27,14 @@
       </a-menu>
     </a-col>
     <a-col flex="100px">
-      <div>{{ $store.state.user?.loginUser?.username ?? "未登录" }}</div>
+      <div @click="showToken">
+        {{ $store.state.user?.loginUser?.username ?? "未登录" }}
+      </div>
+      <div>
+        <a-button v-if="$store.state.user?.loginUser" @click="logout($event)"
+          >退出登录
+        </a-button>
+      </div>
     </a-col>
   </a-row>
 
@@ -68,8 +75,25 @@ const doMenuClick = (key: string) => {
     path: key,
   });
 };
-
-console.log(store.state.user.loginUser);
+const showToken = () => {
+  console.log(localStorage.getItem("token"));
+};
+//退出登录
+const logout = async (event: MouseEvent) => {
+  try {
+    store.state.loginStatus = false;
+    store.state.token = null;
+    store.state.userInfo = {};
+    localStorage.removeItem("token");
+    console.log("退出登录：" + store.state.user.loginUser);
+    await router.push({
+      path: "/user/login",
+      replace: true,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 // setTimeout(() => {
 //   //dispatch调用，写路径名+方法名

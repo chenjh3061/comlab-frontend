@@ -54,6 +54,7 @@ export class SemesterControllerService {
 
   /**
    * @param requestBody
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */

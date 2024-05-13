@@ -129,18 +129,23 @@ export class LabControllerService {
 
   /**
    * @param labAdminId
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
   public static getLabsByLabAdminId(
-    labAdminId: number
+    labAdminId: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/lab/getLabsByLabAdminId",
       query: {
         "lab_admin_id": labAdminId
-      }
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 

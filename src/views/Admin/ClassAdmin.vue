@@ -1,98 +1,146 @@
-/* 实验排课  根据“教师”填报的“实验课申请登记”，将实验课安排到实验室。 
-根据“实验课申请登记”的“实验室类型”确定可以选择的实验室 范围 
-根据“实验课申请登记”的“学生人数”和实验室设备数决定分配 哪几间实验室 
-根据“实验课申请登记”的“起始周”、“结束周”和已经排课的情 况避免实验室冲突
-提示：可以创建一个“实验室排课”表来记录实验室排课的情况，该 表的主要数据包括： 
-排课学期：是哪个学期的课  实验室名称：  实验室编号：  周次：第几周 
-节次：第几节课  课程名：  任课教师：  学生班级： */
+/* 实验排课  根据“教师”填报的“实验课申请登记”，将实验课安排到实验室。
+根据“实验课申请登记”的“实验室类型”确定可以选择的实验室范围
+根据“实验课申请登记”的“学生人数”和实验室设备数决定分配哪几间实验室
+根据“实验课申请登记”的“起始周”、“结束周”和已经排课的情况避免实验室冲突
+提示：可以创建一个“实验室排课”表来记录实验室排课的情况，该 表的主要数据包括：
+排课学期：是哪个学期的课  实验室名称：  实验室编号：  周次：第几周
+节次：第几节课  课程名：  任课教师：  学生班级： */
 <template>
-  <div class="class-admin">
-    <a-container>
-      <a-row>
-        <a-col :span="24">
-          <a-card title="实验排课">
-            <a-form :model="formData" :label-width="100">
-              <a-form-item label="教师">
-                <a-input
-                  v-model="formData.teacher"
-                  placeholder="请输入教师姓名"
-                ></a-input>
-              </a-form-item>
-              <a-form-item label="实验室类型">
-                <a-select
-                  v-model="formData.labType"
-                  placeholder="请选择实验室类型"
-                >
-                  <a-option value="生物实验室">生物实验室</a-option>
-                  <a-option value="化学实验室">化学实验室</a-option>
-                  <a-option value="物理实验室">物理实验室</a-option>
-                </a-select>
-              </a-form-item>
-              <a-form-item label="学生人数">
-                <a-input-number
-                  v-model="formData.studentCount"
-                  :min="1"
-                  placeholder="请输入学生人数"
-                ></a-input-number>
-              </a-form-item>
-              <a-form-item label="实验室设备数">
-                <a-input-number
-                  v-model="formData.equipmentCount"
-                  :min="1"
-                  placeholder="请输入实验室设备数"
-                ></a-input-number>
-              </a-form-item>
-              <a-form-item label="起始周">
-                <a-input-number
-                  v-model="formData.startWeek"
-                  :min="1"
-                  placeholder="请输入起始周"
-                ></a-input-number>
-              </a-form-item>
-              <a-form-item label="结束周">
-                <a-input-number
-                  v-model="formData.endWeek"
-                  :min="1"
-                  placeholder="请输入结束周"
-                ></a-input-number>
-              </a-form-item>
-              <a-form-item>
-                <a-button type="primary" @click="submitForm">提交</a-button>
-              </a-form-item>
-            </a-form>
-          </a-card>
-        </a-col>
-      </a-row>
-    </a-container>
+  <div>
+    <h3>实验课申请</h3>
+    <!-- 申请登记表格 -->
+    <a-table :columns="experimentColumns" :data="experimentData">
+      <template #action="{ record }">
+        <a-button @click="arrangeExperiment(record)">安排实验课</a-button>
+      </template>
+    </a-table>
+
+    <!-- 实验室排课表格 -->
+    <h3>实验室排课表</h3>
+    <a-table
+      column-resizable
+      :columns="labScheduleColumns"
+      :data="labScheduleData"
+    ></a-table>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script>
+import { ref } from "vue";
 
-export default defineComponent({
-  name: "ClassAdmin",
-  components: {},
-  data() {
-    return {
-      formData: {
-        teacher: "",
-        labType: "",
-        studentCount: null,
-        equipmentCount: null,
-        startWeek: null,
-        endWeek: null,
+export default {
+  name: "ExperimentScheduling",
+  setup() {
+    // 实验课申请登记数据
+    const experimentData = ref([]);
+
+    // 实验室排课数据
+    const labScheduleData = ref([]);
+
+    // 实验课申请登记表格列配置
+    const experimentColumns = [
+      {
+        title: "排课学期",
+        dataIndex: "courseSem",
       },
+      {
+        title: "实验室名称",
+        dataIndex: "labName",
+      },
+      {
+        title: "实验室编号",
+        dataIndex: "labId",
+      },
+      {
+        title: "周次",
+        dataIndex: "week",
+      },
+      {
+        title: "节次",
+        dataIndex: "course",
+      },
+      {
+        title: "课程名",
+        dataIndex: "startWeek",
+      },
+      {
+        title: "任课教师",
+        dataIndex: "endWeek",
+      },
+      {
+        title: "学生班级",
+        dataIndex: "stuClass",
+      },
+      {
+        title: "操作",
+        dataIndex: "action",
+        slots: { customRender: "action" },
+      },
+    ];
+
+    // 实验室排课表格列配置
+    const labScheduleColumns = [
+      {
+        title: "排课学期",
+        dataIndex: "semester",
+      },
+      {
+        title: "实验室名称",
+        dataIndex: "labName",
+      },
+      {
+        title: "实验室编号",
+        dataIndex: "labId",
+      },
+      {
+        title: "周次",
+        dataIndex: "week",
+      },
+      {
+        title: "节次",
+        dataIndex: "section",
+      },
+      {
+        title: "课程名",
+        dataIndex: "courseName",
+      },
+      {
+        title: "任课教师",
+        dataIndex: "teacher",
+      },
+      {
+        title: "学生班级",
+        dataIndex: "className",
+      },
+    ];
+
+    // 安排实验课
+    const arrangeExperiment = (record) => {
+      // 根据实验室类型选择实验室
+      // 根据学生人数和实验室设备数确定分配的实验室
+      // 根据起始周、结束周和已排课情况避免实验室冲突
+      // 更新实验室排课数据
+      labScheduleData.value.push({
+        semester: "2024春季学期",
+        labName: record.labType,
+        labId: "Lab001",
+        week: `${record.startWeek}-${record.endWeek}`,
+        section: "第一节",
+        courseName: record.courseName,
+        teacher: record.teacher,
+        className: "实验班",
+      });
+    };
+
+    return {
+      experimentData,
+      experimentColumns,
+      labScheduleData,
+      labScheduleColumns,
+      arrangeExperiment,
     };
   },
-  methods: {
-    submitForm() {
-      // 提交表单逻辑
-    },
-  },
-});
+};
 </script>
 
-<style scoped>
-/* 在这里添加样式 */
-</style>
+<style scoped></style>

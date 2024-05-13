@@ -6,11 +6,54 @@
 <template>
   <span>已有的实验课申请：</span>
   <a-table></a-table>
+  <a-modal
+    title="实验课申请登记"
+    v-model:visible="addCourseModalVisible"
+    @ok="handleAddCourse"
+    @cancel="cancelAddCourse"
+  >
+    <a-form ref="addSemForm" :model="newCourse">
+      <a-form-item
+        label="上课学期"
+        :label-col="{ span: 4 }"
+        :wrapper-col="{ span: 18 }"
+      >
+        <a-input v-model="newCourse.semester" />
+      </a-form-item>
+      <a-form-item
+        label="教学周数"
+        :label-col="{ span: 4 }"
+        :wrapper-col="{ span: 18 }"
+      >
+        <a-input-number v-model="newSemester.week" :min="17" :max="20" />
+      </a-form-item>
+    </a-form>
+  </a-modal>
 </template>
 
 <script>
+import { ref } from "vue";
+import store from "@/store";
+
 export default {
   name: "CourseApply",
+  setup() {
+    const addCourse = ref({
+      semester: "",
+      teacher: store.state.user.loginUser.name,
+      courseName: "",
+      needLabType: "",
+      stuClass: "",
+      stuNum: "",
+      startingWeek: "",
+      endingWeek: "",
+      session: "",
+    });
+    let addCourseModalVisible;
+    return {
+      addCourseModalVisible,
+    };
+  },
   data() {
     return {
       applications: [

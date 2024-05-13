@@ -3,6 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type SemesterAlterDTO = {
-    week: string;
+  id: number;
+  week: string;
+  status: number;
 };
 

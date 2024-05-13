@@ -24,8 +24,8 @@ export class BorrowControllerService {
       method: "POST",
       url: "/borrow/removeBorrow",
       query: {
-        "id": id
-      }
+        id: id,
+      },
     });
   }
 
@@ -41,7 +41,7 @@ export class BorrowControllerService {
       method: "POST",
       url: "/borrow/importBorrow",
       body: requestBody,
-      mediaType: "application/json"
+      mediaType: "application/json",
     });
   }
 
@@ -57,8 +57,8 @@ export class BorrowControllerService {
       method: "POST",
       url: "/borrow/completeBorrow",
       query: {
-        "borrowCompleteDTO": borrowCompleteDto
-      }
+        borrowCompleteDTO: borrowCompleteDto,
+      },
     });
   }
 
@@ -74,7 +74,7 @@ export class BorrowControllerService {
       method: "POST",
       url: "/borrow/alterBorrow",
       body: requestBody,
-      mediaType: "application/json"
+      mediaType: "application/json",
     });
   }
 
@@ -90,8 +90,8 @@ export class BorrowControllerService {
       method: "POST",
       url: "/borrow/admitBorrow",
       query: {
-        "borrowAdmitDTO": borrowAdmitDto
-      }
+        borrowAdmitDTO: borrowAdmitDto,
+      },
     });
   }
 
@@ -107,8 +107,8 @@ export class BorrowControllerService {
       method: "GET",
       url: "/borrow/getBorrowsByWeek",
       query: {
-        "week": week
-      }
+        week: week,
+      },
     });
   }
 
@@ -124,8 +124,8 @@ export class BorrowControllerService {
       method: "GET",
       url: "/borrow/getBorrowsByStudentId",
       query: {
-        "studentId": studentId
-      }
+        studentId: studentId,
+      },
     });
   }
 
@@ -141,8 +141,8 @@ export class BorrowControllerService {
       method: "GET",
       url: "/borrow/getBorrowsByStatus",
       query: {
-        "status": status
-      }
+        status: status,
+      },
     });
   }
 
@@ -158,8 +158,8 @@ export class BorrowControllerService {
       method: "GET",
       url: "/borrow/getBorrowsBySemester",
       query: {
-        "semester": semester
-      }
+        semester: semester,
+      },
     });
   }
 
@@ -175,25 +175,30 @@ export class BorrowControllerService {
       method: "GET",
       url: "/borrow/getBorrowsByLabId",
       query: {
-        "labId": labId
-      }
+        labId: labId,
+      },
     });
   }
 
   /**
    * @param id
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
   public static getBorrowById(
-    id: number
+    id: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/borrow/getBorrowById",
       query: {
-        "id": id
-      }
+        id: id,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -201,10 +206,15 @@ export class BorrowControllerService {
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
-  public static getAllBorrows(): CancelablePromise<ResponseDataObject> {
+  public static getAllBorrows(
+    token: string
+  ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
-      url: "/borrow/getAllBorrows"
+      url: "/borrow/getAllBorrows",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 }

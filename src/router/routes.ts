@@ -94,7 +94,7 @@ export const routes: Array<RouteRecordRaw> = [
   },
 
   {
-    path: "/exercisor",
+    path: "/exerciser",
     name: "实验员界面",
     component: ExercisorView,
     meta: {
@@ -102,7 +102,7 @@ export const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: "/exercisor/fixmaintain",
+        path: "/exerciser/fixmaintain",
         name: "设备报修处理",
         component: FixMaintain,
         meta: {

@@ -26,7 +26,7 @@
             <template #icon>
               <icon-bulb></icon-bulb>
             </template>
-            <router-link to="/admin/lab">实验借用审批</router-link>
+            <router-link to="/admin/lab">实验室借用审批</router-link>
           </a-menu-item>
           <a-menu-item key="/admin/user">
             <template #icon>

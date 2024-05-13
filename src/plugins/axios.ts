@@ -1,6 +1,7 @@
 //Add a request interceptor
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
 axios.interceptors.request.use(
   function (config) {
     // Do something before request is sent
@@ -22,6 +23,7 @@ axios.interceptors.response.use(
     return response;
   },
   function (error) {
+    console.log("qeqweqwe", error);
     //Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     return Promise.reject(error);

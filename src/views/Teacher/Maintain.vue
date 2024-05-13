@@ -9,6 +9,8 @@
 
 <script>
 import { ref } from "vue";
+import store from "@/store";
+import { MaintainControllerService } from "../../../generated";
 
 const applyColumns = [
   {
@@ -36,7 +38,17 @@ let applyData = ref([]);
 
 export default {
   name: "MaintainView",
-  setup: {},
+  setup() {
+    const getMaintain = async () => {
+      try {
+        const res = await MaintainControllerService.getMaintainsByTeacherId(
+          store.state.user.loginUser.id
+        );
+      } catch (e) {
+        console.log(e);
+      }
+    };
+  },
 };
 </script>
 

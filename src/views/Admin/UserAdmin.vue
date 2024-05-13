@@ -5,6 +5,7 @@
 
 <template>
   <div>
+    <h2>平台用户管理</h2>
     <a-input
       placeholder="请输入姓名"
       v-model="searchName"
@@ -13,8 +14,13 @@
     <a-button @click="searchUser">搜索</a-button>
     <a-button @click="resetSearch">重置</a-button>
     <a-button type="primary" @click="showAddUserModal">新增用户</a-button>
+    <h3>批量导入：(传入格式正确的Excel文档)</h3>
+    <a-space direction="vertical" :style="{ width: '100%' }">
+      <a-upload action="/" />
+    </a-space>
     <a-modal
       title="新增用户"
+      column-resizable
       v-model:visible="addUserModalVisible"
       @ok="handleAddUser"
       @cancel="cancelAddUser"
@@ -76,13 +82,112 @@
         </a-form-item>
       </a-form>
     </a-modal>
-    <a-table :columns="userColumns" :data="userData" />
+    <a-table
+      :columns="userColumns"
+      :data="userData"
+      column-resizable
+      @change="handleChange"
+    >
+      <template
+        #name-filter="{
+          filterValue,
+          setFilterValue,
+          handleFilterConfirm,
+          handleFilterReset,
+        }"
+      >
+        <div class="custom-filter">
+          <a-space direction="vertical">
+            <a-input
+              :model-value="filterValue[0]"
+              @input="(value) => setFilterValue([value])"
+            />
+            <div class="custom-filter-footer">
+              <a-button @click="handleFilterConfirm">Confirm</a-button>
+              <a-button @click="handleFilterReset">Reset</a-button>
+            </div>
+          </a-space>
+        </div>
+      </template>
+      <template #action="{ record }">
+        <a-button id="action" status="normal" @click="editUser(record)"
+          >修改用户
+        </a-button>
+        <a-button id="action" status="danger" @click="deleteUser(record)"
+          >删除用户
+        </a-button>
+      </template>
+    </a-table>
+    <a-modal
+      title="修改用户"
+      v-model:visible="editUserModalVisible"
+      @ok="handleEditUser"
+      @cancel="canceleditUser"
+    >
+      <a-form ref="addUserForm" :model="newUser">
+        <a-form-item
+          label="用户名"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-input v-model="newUser.username" />
+        </a-form-item>
+        <a-form-item
+          label="角色"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-select v-model="newUser.role" style="width: 100%">
+            <a-option value="0">管理员</a-option>
+            <a-option value="3">实验员</a-option>
+            <a-option value="2">教师</a-option>
+            <a-option value="1">学生</a-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+          label="密码"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-input v-model="newUser.password" />
+        </a-form-item>
+        <a-form-item
+          label="姓名"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-input v-model="newUser.name" />
+        </a-form-item>
+        <a-form-item
+          label="专业"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-input v-model="newUser.major" />
+        </a-form-item>
+        <a-form-item
+          label="班级"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-input v-model="newUser.clazz" />
+        </a-form-item>
+        <a-form-item
+          label="职称"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-input v-model="newUser.title" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
 <script>
-import { onMounted, ref } from "vue";
+import { h, onMounted, ref } from "vue";
 import { UserControllerService } from "../../../generated";
+import { IconSearch } from "@arco-design/web-vue/es/icon";
 
 export default {
   name: "UserAdmin",
@@ -90,6 +195,7 @@ export default {
   setup() {
     let userData = ref([]);
     const addUserModalVisible = ref(false);
+    let editUserModalVisible = ref(false);
     const newUser = ref({
       username: "",
       password: "",
@@ -115,7 +221,7 @@ export default {
 
     const searchUser = async () => {
       try {
-        const res = await UserControllerService.getUserByName(
+        const res = await UserControllerService.getUsersByNamePrefix(
           searchName.value,
           localStorage.getItem("token")
         );
@@ -136,24 +242,58 @@ export default {
         title: "账号ID",
         dataIndex: "id",
         key: "id",
+        sortable: {
+          sortDirections: ["ascend", "descend"],
+        },
       },
       {
         title: "用户名",
         dataIndex: "username",
         key: "username",
+        sortable: {
+          sortDirections: ["ascend", "descend"],
+        },
+        filterable: {
+          filter: (value, record) => record.username.includes(value),
+          slotName: "name-filter",
+          icon: () => h(IconSearch),
+        },
       },
       {
         title: "角色",
         dataIndex: "role",
         key: "role",
+        filterable: {
+          filters: [
+            {
+              text: "管理员",
+              value: 0,
+            },
+            {
+              text: "学生",
+              value: 1,
+            },
+            {
+              text: "教师",
+              value: 2,
+            },
+            {
+              text: "实验员",
+              value: 3,
+            },
+          ],
+          filter: (value, row) => row.role.toString().includes(value),
+        },
       },
       {
         title: "操作",
         key: "action",
-        slots: { customRender: "action" },
+        slotName: "action",
       },
     ];
-
+    const handleChange = (data, extra, currentDataSource) => {
+      console.log("change", data, extra, currentDataSource);
+    };
     const handleAddUser = async () => {
       try {
         await UserControllerService.importUser(
@@ -178,10 +318,15 @@ export default {
       newUser.value.role = "";
       newUser.value.password = "";
     };
-
+    const editUser = async (record) => {
+      editUserModalVisible.value = true;
+      newUser.value = record;
+      console.log(editUserModalVisible);
+      console.log(newUser.value);
+    };
     const deleteUser = async (userId) => {
       try {
-        await UserControllerService.deleteUser(
+        await UserControllerService.removeUser(
           userId,
           localStorage.getItem("token")
         );
@@ -207,9 +352,12 @@ export default {
     const showAddUserModal = () => {
       addUserModalVisible.value = true;
     };
-
+    const getToken = () => {
+      console.log(localStorage.getItem("token"));
+    };
     onMounted(() => {
       getUser();
+      getToken();
     });
 
     return {
@@ -218,8 +366,11 @@ export default {
       searchName,
       searchUser,
       resetSearch,
+      handleChange,
       addUserModalVisible,
+      editUserModalVisible,
       newUser,
+      editUser,
       handleAddUser,
       cancelAddUser,
       deleteUser,
@@ -230,4 +381,17 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.custom-filter {
+  padding: 20px;
+  background: var(--color-bg-5);
+  border: 1px solid var(--color-neutral-3);
+  border-radius: var(--border-radius-medium);
+  box-shadow: 0 2px 5px rgb(0 0 0 / 10%);
+}
+
+.custom-filter-footer {
+  display: flex;
+  justify-content: space-between;
+}
+</style>

@@ -116,17 +116,22 @@ export class UserControllerService {
 
   /**
    * @param namePrefix
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
   public static getUsersByNamePrefix(
-    namePrefix: string
+    namePrefix: string,
+    token:string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/user/getUsersByNamePrefix",
       query: {
         namePrefix: namePrefix,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
   }

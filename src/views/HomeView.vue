@@ -1,8 +1,9 @@
 <template>
   <div class="home">欢迎来到计算机系实验管理平台</div>
+
   <a-card>
-    <a-calendar v-model="value" />
-    select: {{ value }}
+    <span>专业课表：</span>
+    <a-table />
   </a-card>
 </template>
 
@@ -11,9 +12,16 @@ import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   name: "HomeView",
-  setup() {
-    const value = ref<string | Date>(new Date());
-    return value;
-  },
+  methods: { ref },
 });
 </script>
+<style>
+.home {
+  margin-left: 20px;
+  font-size: 30px;
+}
+
+a-calendar {
+  max-width: 1600px;
+}
+</style>

@@ -19,10 +19,14 @@ export default {
     async getLoginUser({ commit, state }, payload) {
       // 从远程请求获取登录信息
       const token = localStorage?.getItem("token");
-      const res = await UserControllerService.getLoginUser(token || " ");
+      const res = await UserControllerService.getLoginUser(
+        token || "123123123"
+      );
+      console.log(res);
       if (res.status === 100) {
         commit("updateUser", res.data);
         //console.log("登录响应：" + JSON.stringify(res));
+        //console.log(store.state.user.loginUser);
         // console.log("token: " + token);
         const role = store.state.user.loginUser.role;
         switch (role) {

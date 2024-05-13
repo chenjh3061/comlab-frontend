@@ -1,6 +1,6 @@
 <template>
   <div class="editor">
-    <span>自由练习场</span>
+    <h2>自由练习场</h2>
     <MdEditor :value="value" :handle-change="onChange" />
   </div>
 </template>

@@ -14,38 +14,20 @@
           mode="pop"
           show-collapse-button
           theme="dark"
-          :default-selected-keys="['/admin/semester']"
+          :default-selected-keys="['/exerciser']"
           @click="handleMenuClick"
         >
-          <a-menu-item key="/admin/semester">
+          <a-menu-item key="/exerciser/fixmaintain">
             <template #icon>
               <icon-apps></icon-apps>
             </template>
-            <router-link to="/admin/semester">学期管理</router-link>
-          </a-menu-item>
-          <a-menu-item key="/admin/class">
-            <template #icon>
-              <icon-at></icon-at>
-            </template>
-            <router-link to="/admin/class">课程管理</router-link>
-          </a-menu-item>
-          <a-menu-item key="/admin/lab">
-            <template #icon>
-              <icon-bulb></icon-bulb>
-            </template>
-            <router-link to="/admin/lab">实验室管理</router-link>
-          </a-menu-item>
-          <a-menu-item key="/admin/user">
-            <template #icon>
-              <icon-user></icon-user>
-            </template>
-            <router-link to="/admin/user">用户管理</router-link>
+            <router-link to="/exerciser/fixmaintain">设备报修处理</router-link>
           </a-menu-item>
         </a-menu>
       </div>
     </a-layout-sider>
     <a-layout-content :style="{ marginLeft: '100px', padding: '24px' }">
-      <h1>管理员操作</h1>
+      <h1>实验员操作</h1>
       <router-view></router-view>
     </a-layout-content>
   </a-layout>
@@ -64,9 +46,6 @@ export default defineComponent({
   name: "AdminView",
   components: {
     IconApps,
-    IconAt,
-    IconBulb,
-    IconUser,
   },
   setup() {
     const collapsed: Ref<boolean> = ref(false);
