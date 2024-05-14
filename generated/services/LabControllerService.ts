@@ -16,14 +16,18 @@ export class LabControllerService {
    * @throws ApiError
    */
   public static removeLab(
-    id: number
+    id: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/lab/removeLab",
       query: {
         "id": id
-      }
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
     });
   }
 
@@ -33,13 +37,17 @@ export class LabControllerService {
    * @throws ApiError
    */
   public static importLab(
-    requestBody: LabImportDTO
+    requestBody: LabImportDTO,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/lab/importLab",
       body: requestBody,
-      mediaType: "application/json"
+      mediaType: "application/json",
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
     });
   }
 
@@ -49,13 +57,17 @@ export class LabControllerService {
    * @throws ApiError
    */
   public static alterLab(
-    requestBody: LabAlterDTO
+    requestBody: LabAlterDTO,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/lab/alterLab",
       body: requestBody,
-      mediaType: "application/json"
+      mediaType: "application/json",
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
     });
   }
 
@@ -65,14 +77,18 @@ export class LabControllerService {
    * @throws ApiError
    */
   public static getLabsByType(
-    type: number
+    type: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/lab/getLabsByType",
       query: {
         "type": type
-      }
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
     });
   }
 
@@ -82,14 +98,18 @@ export class LabControllerService {
    * @throws ApiError
    */
   public static getLabsByNumberPrefix(
-    numberPrefix: string
+    numberPrefix: string,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/lab/getLabsByNumberPrefix",
       query: {
         "numberPrefix": numberPrefix
-      }
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
     });
   }
 
@@ -99,14 +119,18 @@ export class LabControllerService {
    * @throws ApiError
    */
   public static getLabsByNamePrefix(
-    namePrefix: string
+    namePrefix: string,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/lab/getLabsByNamePrefix",
       query: {
         "namePrefix": namePrefix
-      }
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
     });
   }
 
@@ -116,14 +140,18 @@ export class LabControllerService {
    * @throws ApiError
    */
   public static getLabsByLeastEquipmentNum(
-    equipmentNum: number
+    equipmentNum: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/lab/getLabsByLeastEquipmentNum",
       query: {
         "equipmentNum": equipmentNum
-      }
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
     });
   }
 
@@ -155,14 +183,18 @@ export class LabControllerService {
    * @throws ApiError
    */
   public static getLabById(
-    id: number
+    id: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/lab/getLabById",
       query: {
         "id": id
-      }
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
     });
   }
 
@@ -170,10 +202,13 @@ export class LabControllerService {
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
-  public static getAllLabs(): CancelablePromise<ResponseDataObject> {
+  public static getAllLabs(token: string): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
-      url: "/lab/getAllLabs"
+      url: "/lab/getAllLabs",
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
     });
   }
 }

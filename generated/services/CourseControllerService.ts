@@ -17,13 +17,17 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static removeCourse(
-    id: number
+    id: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/course/removeCourse",
       query: {
-        "id": id
+        id: id,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
       }
     });
   }
@@ -34,13 +38,17 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static importCourse(
-    requestBody: CourseImportDTO
+    requestBody: CourseImportDTO,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/course/importCourse",
       body: requestBody,
-      mediaType: "application/json"
+      mediaType: "application/json",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -50,13 +58,17 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static alterCourse(
-    requestBody: CourseAlterDTO
+    requestBody: CourseAlterDTO,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/course/alterCourse",
       body: requestBody,
-      mediaType: "application/json"
+      mediaType: "application/json",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
   }
 
@@ -66,13 +78,17 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static admitCourse(
-    courseAdmitDto: CourseAdmitDTO
+    courseAdmitDto: CourseAdmitDTO,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/course/admitCourse",
       query: {
-        "courseAdmitDTO": courseAdmitDto
+        courseAdmitDTO: courseAdmitDto,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
       }
     });
   }
@@ -83,13 +99,17 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static getCoursesByWeek(
-    week: string
+    week: string,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/course/getCoursesByWeek",
       query: {
-        "week": week
+        week: week,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`
       }
     });
   }
@@ -100,14 +120,18 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static getCoursesByType(
-    type: number
+    type: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/course/getCoursesByType",
       query: {
-        "type": type
-      }
+        type: type,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -117,14 +141,18 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static getCoursesByTeacherId(
-    teacherId: number
+    teacherId: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/course/getCoursesByTeacherId",
       query: {
-        "teacherId": teacherId
-      }
+        teacherId: teacherId,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -134,14 +162,18 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static getCoursesByStatus(
-    status: number
+    status: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/course/getCoursesByStatus",
       query: {
-        "status": status
-      }
+        status: status,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -151,14 +183,18 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static getCoursesBySemester(
-    semester: string
+    semester: string,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/course/getCoursesBySemester",
       query: {
-        "semester": semester
-      }
+        semester: semester,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -168,14 +204,18 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static getCoursesByNamePrefix(
-    namePrefix: string
+    namePrefix: string,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/course/getCoursesByNamePrefix",
       query: {
-        "namePrefix": namePrefix
-      }
+        namePrefix: namePrefix,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -185,14 +225,18 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static getCoursesByLabId(
-    labId: number
+    labId: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/course/getCoursesByLabId",
       query: {
-        "labId": labId
-      }
+        labId: labId,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -202,14 +246,18 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static getCourseById(
-    id: number
+    id: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/course/getCourseById",
       query: {
-        "id": id
-      }
+        id: id,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -217,10 +265,15 @@ export class CourseControllerService {
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
-  public static getAllCourses(): CancelablePromise<ResponseDataObject> {
+  public static getAllCourses(
+    token: string
+  ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
-      url: "/course/getAllCourses"
+      url: "/course/getAllCourses",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
   }
 }

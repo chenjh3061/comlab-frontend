@@ -20,7 +20,8 @@ export default {
       // 从远程请求获取登录信息
       const token = localStorage?.getItem("token");
       const res = await UserControllerService.getLoginUser(
-        token || "123123123"
+        token ||
+          "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJkNTBjNjcxNmJiOTg0NjU5OTZiOTI1ZThhNWY2NmNkYyIsInN1YiI6IjQiLCJpc3MiOiJzZyIsImlhdCI6MTcxNTYxMjE1NCwiZXhwIjoxNzE2ODIxNzU0fQ.AY6FHGwql8nMhKadet8m0jmQeCRIq3ZZAPpPZQKKEIo"
       );
       console.log(res);
       if (res.status === 100) {

@@ -35,7 +35,7 @@ export default {
       },
       {
         title: "申请周次",
-        dataIndex: "startingWeek",
+        dataIndex: "week",
       },
       {
         title: "申请节次",

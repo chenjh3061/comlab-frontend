@@ -63,7 +63,10 @@
 
 <script>
 import { onMounted, ref } from "vue";
-import { BorrowControllerService } from "../../../generated";
+import {
+  BorrowControllerService,
+  SemesterControllerService,
+} from "../../../generated";
 import store from "@/store";
 
 export default {
@@ -76,7 +79,8 @@ export default {
       labId: "",
       reason: "",
       semester: "",
-      week: "",
+      startingWeek: "",
+      endingWeek: "",
       session: "",
     });
     const getApply = async () => {
@@ -86,6 +90,10 @@ export default {
           localStorage.getItem("token")
         );
         applyData.value = res.data;
+        newApply.value.semester =
+          await SemesterControllerService.getCurrentSemester(
+            localStorage.getItem("token")
+          ).data.semester;
         console.log("applys:", res);
       } catch (error) {
         console.error("Error fetching users:", error);

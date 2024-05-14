@@ -18,12 +18,18 @@ export class UserControllerService {
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
-  public static removeUser(id: number): CancelablePromise<ResponseDataObject> {
+  public static removeUser(
+    id: number,
+    token: string
+  ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/user/removeUser",
       query: {
         id: id,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -71,13 +77,17 @@ export class UserControllerService {
    * @throws ApiError
    */
   public static alterUser(
-    requestBody: UserAlterDTO
+    requestBody: UserAlterDTO,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/user/alterUser",
       body: requestBody,
       mediaType: "application/json",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -87,13 +97,17 @@ export class UserControllerService {
    * @throws ApiError
    */
   public static alterPassword(
-    requestBody: UserAlterPasswordDTO
+    requestBody: UserAlterPasswordDTO,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/user/alterPassword",
       body: requestBody,
       mediaType: "application/json",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -122,7 +136,7 @@ export class UserControllerService {
    */
   public static getUsersByNamePrefix(
     namePrefix: string,
-    token:string
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",

@@ -26,7 +26,8 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { CourseControllerService } from "../../../generated";
 
 export default {
   name: "ExperimentScheduling",
@@ -41,40 +42,44 @@ export default {
     const experimentColumns = [
       {
         title: "排课学期",
-        dataIndex: "courseSem",
-      },
-      {
-        title: "实验室名称",
-        dataIndex: "labName",
+        dataIndex: "semester",
       },
       {
         title: "实验室编号",
         dataIndex: "labId",
       },
       {
-        title: "周次",
-        dataIndex: "week",
+        title: "开始周次",
+        dataIndex: "startingWeek",
+      },
+      {
+        title: "结束周次",
+        dataIndex: "endingWeek",
       },
       {
         title: "节次",
-        dataIndex: "course",
+        dataIndex: "session",
       },
       {
         title: "课程名",
-        dataIndex: "startWeek",
+        dataIndex: "name",
       },
       {
         title: "任课教师",
-        dataIndex: "endWeek",
+        dataIndex: "teacherId",
       },
       {
         title: "学生班级",
-        dataIndex: "stuClass",
+        dataIndex: "clazz",
+      },
+      {
+        title: "学生数量",
+        dataIndex: "studentNum",
       },
       {
         title: "操作",
         dataIndex: "action",
-        slots: { customRender: "action" },
+        slotName: "action",
       },
     ];
 
@@ -114,6 +119,24 @@ export default {
       },
     ];
 
+    const getData = async () => {
+      try {
+        const res1 = await CourseControllerService.getCoursesByStatus(
+          0,
+          localStorage.getItem("token")
+        );
+        const res2 = await CourseControllerService.getCoursesByStatus(
+          1,
+          localStorage.getItem("token")
+        );
+        experimentData.value = res1.data;
+        labScheduleData.value = res2.data;
+        console.log(res1.data);
+        console.log(res2.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
     // 安排实验课
     const arrangeExperiment = (record) => {
       // 根据实验室类型选择实验室
@@ -131,7 +154,9 @@ export default {
         className: "实验班",
       });
     };
-
+    onMounted(() => {
+      getData();
+    });
     return {
       experimentData,
       experimentColumns,

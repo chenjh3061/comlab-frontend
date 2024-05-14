@@ -6,7 +6,7 @@
     <h3>设备报修处理：</h3>
     <a-table
       :columns="maintainColumns"
-      :data-source="maintainData"
+      :data="maintainData"
       row-key="id"
       bordered
     >
@@ -37,16 +37,20 @@ export default {
   setup() {
     const maintainColumns = [
       {
-        title: "报修设备",
-        dataIndex: "equipment",
+        title: "实验室编号",
+        dataIndex: "id",
+      },
+      {
+        title: "报修描述",
+        dataIndex: "faultDescription",
       },
       {
         title: "报修人",
-        dataIndex: "applicant",
+        dataIndex: "teacherId",
       },
       {
         title: "报修时间",
-        dataIndex: "applyTime",
+        dataIndex: "createTime",
       },
       {
         title: "维修状态",
@@ -55,7 +59,7 @@ export default {
       {
         title: "操作",
         dataIndex: "action",
-        slots: { customRender: "action" },
+        slotName: "action",
       },
     ];
     const maintainData = ref([]);
@@ -91,7 +95,11 @@ export default {
           store.state.user.loginUser.id,
           localStorage.getItem("token")
         );
-        maintainData.value = res1.data || [];
+        maintainData.value = res1.data;
+        console.log(
+          "维修信息：" + store.state.user.loginUser.id,
+          maintainData.value
+        );
         labData.value = res2.data || [];
         isFetched = true;
         //console.log("id" + store.state.loginUser.id);
@@ -103,7 +111,7 @@ export default {
 
     const startMaintenance = async (record) => {
       try {
-        await MaintainControllerService.startMaintenance(record.id);
+        await MaintainControllerService.startMaintain(record.id);
         record.status = "维修中";
       } catch (error) {
         console.error("Error:", error);
@@ -112,7 +120,7 @@ export default {
 
     const finishMaintenance = async (record) => {
       try {
-        await MaintainControllerService.finishMaintenance(
+        await MaintainControllerService.completeMaintain(
           record.id,
           "维修完成，设备正常"
         );

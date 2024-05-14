@@ -6,21 +6,22 @@
 <template>
   <div>
     <h2>平台用户管理</h2>
-    <a-input
-      placeholder="请输入姓名"
-      v-model="searchName"
-      style="width: 200px; margin-bottom: 10px"
-    />
-    <a-button @click="searchUser">搜索</a-button>
-    <a-button @click="resetSearch">重置</a-button>
+    <!--    <a-input-->
+    <!--      placeholder="请输入姓名"-->
+    <!--      v-model="searchName"-->
+    <!--      style="width: 200px; margin-bottom: 10px"-->
+    <!--    />-->
+    <!--    <a-button @click="searchUser">搜索</a-button>-->
+    <!--    <a-button @click="resetSearch">重置</a-button>-->
     <a-button type="primary" @click="showAddUserModal">新增用户</a-button>
-    <h3>批量导入：(传入格式正确的Excel文档)</h3>
-    <a-space direction="vertical" :style="{ width: '100%' }">
-      <a-upload action="/" />
-    </a-space>
+    <!--    <h3>批量导入：(传入格式正确的Excel文档)</h3>-->
+    <!--    <a-space direction="vertical" :style="{ width: '100%' }">-->
+    <!--      <a-upload action="/" />-->
+    <!--    </a-space>-->
     <a-modal
       title="新增用户"
       column-resizable
+      :closable="false"
       v-model:visible="addUserModalVisible"
       @ok="handleAddUser"
       @cancel="cancelAddUser"
@@ -111,7 +112,10 @@
       </template>
       <template #action="{ record }">
         <a-button id="action" status="normal" @click="editUser(record)"
-          >修改用户
+          >修改信息
+        </a-button>
+        <a-button id="action" status="warning" @click="alterPassword(record)"
+          >重置密码
         </a-button>
         <a-button id="action" status="danger" @click="deleteUser(record)"
           >删除用户
@@ -119,65 +123,57 @@
       </template>
     </a-table>
     <a-modal
-      title="修改用户"
+      title="修改用户信息"
+      :closable="false"
       v-model:visible="editUserModalVisible"
       @ok="handleEditUser"
-      @cancel="canceleditUser"
+      @cancel="cancelEditUser"
     >
-      <a-form ref="addUserForm" :model="newUser">
-        <a-form-item
-          label="用户名"
-          :label-col="{ span: 4 }"
-          :wrapper-col="{ span: 18 }"
-        >
-          <a-input v-model="newUser.username" />
-        </a-form-item>
-        <a-form-item
-          label="角色"
-          :label-col="{ span: 4 }"
-          :wrapper-col="{ span: 18 }"
-        >
-          <a-select v-model="newUser.role" style="width: 100%">
-            <a-option value="0">管理员</a-option>
-            <a-option value="3">实验员</a-option>
-            <a-option value="2">教师</a-option>
-            <a-option value="1">学生</a-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-          label="密码"
-          :label-col="{ span: 4 }"
-          :wrapper-col="{ span: 18 }"
-        >
-          <a-input v-model="newUser.password" />
-        </a-form-item>
+      <a-form v-if="alterUser" ref="editUserForm" :model="alterUser">
         <a-form-item
           label="姓名"
           :label-col="{ span: 4 }"
           :wrapper-col="{ span: 18 }"
         >
-          <a-input v-model="newUser.name" />
+          <a-input v-model="alterUser.name" />
         </a-form-item>
         <a-form-item
           label="专业"
           :label-col="{ span: 4 }"
           :wrapper-col="{ span: 18 }"
         >
-          <a-input v-model="newUser.major" />
+          <a-input v-model="alterUser.major" />
         </a-form-item>
         <a-form-item
           label="班级"
           :label-col="{ span: 4 }"
           :wrapper-col="{ span: 18 }"
         >
-          <a-input v-model="newUser.clazz" />
+          <a-input v-model="alterUser.clazz" />
         </a-form-item>
         <a-form-item
           label="职称"
           :label-col="{ span: 4 }"
           :wrapper-col="{ span: 18 }"
         >
-          <a-input v-model="newUser.title" />
+          <a-input v-model="alterUser.title" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+    <a-modal
+      title="重置密码"
+      :closable="false"
+      v-model:visible="alterPasswordModalVisible"
+      @ok="handleAlterPassword"
+      @cancel="cancelAlterPassword"
+    >
+      <a-form v-if="selectedUser" ref="alterPasswordForm" :model="selectedUser">
+        <a-form-item
+          label="输入新密码："
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-input v-model="selectedUser.password" />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -188,32 +184,44 @@
 import { h, onMounted, ref } from "vue";
 import { UserControllerService } from "../../../generated";
 import { IconSearch } from "@arco-design/web-vue/es/icon";
+import message from "@arco-design/web-vue/es/message";
+import async from "async";
+import { fastKey } from "core-js/internals/internal-metadata";
 
 export default {
   name: "UserAdmin",
+  methods: { fastKey },
 
   setup() {
     let userData = ref([]);
     const addUserModalVisible = ref(false);
-    let editUserModalVisible = ref(false);
+    const editUserModalVisible = ref(false);
+    const alterPasswordModalVisible = ref(false);
+
     const newUser = ref({
       username: "",
       password: "",
-      role: "",
+      role: 0,
       name: "",
       major: "",
       clazz: "",
-      title: "",
+    });
+
+    const alterUser = ref({
+      id: " ",
+      name: " ",
+      major: " ",
+      clazz: " ",
     });
     let searchName = ref("");
-
+    const selectedUser = ref(null);
     const getUser = async () => {
       try {
         const res = await UserControllerService.getAllUsers(
           localStorage.getItem("token")
         );
         userData.value = res.data;
-        //console.log("allUsers:", res);
+        console.log("allUsers:", userData.value);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -296,13 +304,18 @@ export default {
     };
     const handleAddUser = async () => {
       try {
-        await UserControllerService.importUser(
+        const res = await UserControllerService.importUser(
           newUser.value,
           localStorage.getItem("token")
         );
-        console.log("newUser" + newUser.value);
-        await getUser();
-        addUserModalVisible.value = false;
+        if (res.status === 100) {
+          alert("操作成功");
+          resetAddUserForm();
+          await getUser();
+          addUserModalVisible.value = false;
+        } else {
+          message.error("操作失败!  " + res.message + "  " + res.description);
+        }
       } catch (error) {
         console.error("Error adding user:", error);
       }
@@ -312,43 +325,87 @@ export default {
       addUserModalVisible.value = false;
       resetAddUserForm();
     };
-
     const resetAddUserForm = () => {
-      newUser.value.name = "";
-      newUser.value.role = "";
-      newUser.value.password = "";
+      newUser.value = {
+        username: " ",
+        password: " ",
+        role: 0,
+        name: " ",
+        major: " ",
+        clazz: " ",
+        title: " ",
+      };
     };
     const editUser = async (record) => {
+      alterUser.value = { ...record };
       editUserModalVisible.value = true;
-      newUser.value = record;
-      console.log(editUserModalVisible);
-      console.log(newUser.value);
     };
-    const deleteUser = async (userId) => {
+    const handleEditUser = async () => {
       try {
-        await UserControllerService.removeUser(
-          userId,
+        const res = await UserControllerService.alterUser(
+          alterUser.value,
           localStorage.getItem("token")
         );
-        await getUser();
-      } catch (error) {
-        console.error("Error deleting user:", error);
+        if (res.status === 100) {
+          alert("操作成功");
+          await getUser();
+          editUserModalVisible.value = false;
+        } else {
+          message.error("操作失败!  " + res.message + "  " + res.description);
+        }
+      } catch (e) {
+        console.log(e);
       }
     };
-
-    const resetPassword = async (userId) => {
+    const cancelEditUser = () => {
+      editUserModalVisible.value = false;
+      alterUser.value = null;
+    };
+    const alterPassword = async (record) => {
+      selectedUser.value = { id: record.id, newPassword: "" };
+      alterPasswordModalVisible.value = true;
+      //console.log(alterPasswordModalVisible);
+    };
+    const handleAlterPassword = async () => {
       try {
-        //todo ：alter方法要修
-        await UserControllerService.alterPassword(
-          userId,
+        const res = await UserControllerService.alterPassword(
+          selectedUser.value,
           localStorage.getItem("token")
         );
-        await getUser();
+        console.log(selectedUser.value);
+        if (res.status === 100) {
+          alert("密码重置成功！");
+          alterPasswordModalVisible.value = false;
+          selectedUser.value = null;
+        } else {
+          message.error("操作失败! " + res.message + " " + res.description);
+        }
       } catch (error) {
         console.error("Error resetting password:", error);
       }
     };
 
+    const cancelAlterPassword = () => {
+      alterPasswordModalVisible.value = false;
+      selectedUser.value = null;
+    };
+
+    const deleteUser = async (userId) => {
+      try {
+        const res = await UserControllerService.removeUser(
+          userId,
+          localStorage.getItem("token")
+        );
+        if (res.status === 100) {
+          message.success("用户删除成功");
+          await getUser();
+        } else {
+          message.error("删除失败! " + res.message + " " + res.description);
+        }
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      }
+    };
     const showAddUserModal = () => {
       addUserModalVisible.value = true;
     };
@@ -367,15 +424,22 @@ export default {
       searchUser,
       resetSearch,
       handleChange,
+      handleEditUser,
+      alterPassword,
+      cancelEditUser,
       addUserModalVisible,
       editUserModalVisible,
+      alterPasswordModalVisible,
+      cancelAlterPassword,
+      handleAlterPassword,
       newUser,
+      alterUser,
       editUser,
       handleAddUser,
       cancelAddUser,
       deleteUser,
-      resetPassword,
       showAddUserModal,
+      selectedUser,
     };
   },
 };

@@ -23,11 +23,11 @@ export class SemesterControllerService {
       method: "POST",
       url: "/semester/removeSemester",
       query: {
-        id: id,
+        id: id
       },
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
   }
 
@@ -47,8 +47,8 @@ export class SemesterControllerService {
       body: requestBody,
       mediaType: "application/json",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
   }
 
@@ -68,8 +68,8 @@ export class SemesterControllerService {
       body: requestBody,
       mediaType: "application/json",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
   }
 
@@ -86,11 +86,11 @@ export class SemesterControllerService {
       method: "GET",
       url: "/semester/getSemesterById",
       query: {
-        id: id,
+        id: id
       },
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
   }
 
@@ -105,8 +105,20 @@ export class SemesterControllerService {
       method: "GET",
       url: "/semester/getAllSemesters",
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+  public static getCurrentSemester(
+    token: string
+  ): CancelablePromise<ResponseDataObject> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/semester/getCurrentSemester",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
   }
 }
