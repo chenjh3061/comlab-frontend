@@ -199,6 +199,10 @@ export default {
     };
 
     const deleteSem = async (record) => {
+      if (record.status === 1) {
+        alert("不可删除当前学期!");
+        return;
+      }
       try {
         const res = await SemesterControllerService.removeSemester(
           record.id,

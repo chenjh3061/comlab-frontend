@@ -14,6 +14,7 @@ import { request as __request } from "../core/request";
 export class MaintainControllerService {
   /**
    * @param maintainStartDto
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
@@ -24,11 +25,10 @@ export class MaintainControllerService {
     return __request(OpenAPI, {
       method: "POST",
       url: "/maintain/startMaintain",
-      query: {
-        "maintainStartDTO": maintainStartDto
-      },
+      body: maintainStartDto,
+      mediaType: "application/json",
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -46,10 +46,10 @@ export class MaintainControllerService {
       method: "POST",
       url: "/maintain/removeMaintain",
       query: {
-        "id": id
+        id: id,
       },
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -69,13 +69,14 @@ export class MaintainControllerService {
       body: requestBody,
       mediaType: "application/json",
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
 
   /**
    * @param maintainCompleteDto
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
@@ -86,11 +87,10 @@ export class MaintainControllerService {
     return __request(OpenAPI, {
       method: "POST",
       url: "/maintain/completeMaintain",
-      query: {
-        "maintainCompleteDTO": maintainCompleteDto
-      },
+      body: maintainCompleteDto,
+      mediaType: "application/json",
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -110,7 +110,7 @@ export class MaintainControllerService {
       body: requestBody,
       mediaType: "application/json",
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -128,10 +128,10 @@ export class MaintainControllerService {
       method: "GET",
       url: "/maintain/getMaintainsByTeacherId",
       query: {
-        "teacherId": teacherId
+        teacherId: teacherId,
       },
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -149,10 +149,10 @@ export class MaintainControllerService {
       method: "GET",
       url: "/maintain/getMaintainsByStatus",
       query: {
-        "status": status
+        status: status,
       },
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -171,7 +171,7 @@ export class MaintainControllerService {
       method: "GET",
       url: "/maintain/getMaintainsByLabId",
       query: {
-        "labId": labId
+        labId: labId,
       },
       headers: {
         Authorization: `Bearer ${token}`,
@@ -193,7 +193,7 @@ export class MaintainControllerService {
       method: "GET",
       url: "/maintain/getMaintainsByLabAdminId",
       query: {
-        "labAdminId": labAdminId
+        labAdminId: labAdminId,
       },
       headers: {
         Authorization: `Bearer ${token}`,
@@ -214,10 +214,10 @@ export class MaintainControllerService {
       method: "GET",
       url: "/maintain/getMaintainById",
       query: {
-        "id": id
+        id: id,
       },
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -229,7 +229,7 @@ export class MaintainControllerService {
   public static getAllMaintains(): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
-      url: "/maintain/getAllMaintains"
+      url: "/maintain/getAllMaintains",
     });
   }
 }

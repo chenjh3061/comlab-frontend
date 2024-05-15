@@ -1,0 +1,10 @@
+{
+  "input": {
+    "source": "http://localhost:3000/v2/api-docs/default",
+    "headers": {
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI5N2RmYTY0NDY4YmM0YjVmOTQzZTU4ZmY5NjUyNTQ2NiIsInN1YiI6IjIiLCJpc3MiOiJzZyIsImlhdCI6MTcxNTY3NjIzNCwiZXhwIjoxNzE2ODg1ODM0fQ.ZgdGUjFcZzPJjkc2ImSMBoTRqDE0rTPHSeTb801I9vA"
+    }
+  },
+  "output": "./generate",
+  "client": "axios"
+}
