@@ -8,6 +8,7 @@ import type { ResponseDataObject } from "../models/ResponseDataObject";
 import type { CancelablePromise } from "../core/CancelablePromise";
 import { OpenAPI } from "../core/OpenAPI";
 import { request as __request } from "../core/request";
+import { LabAvaliableGetDTO } from "../models/LabAvaliableGetDTO";
 
 export class LabControllerService {
   /**
@@ -23,10 +24,10 @@ export class LabControllerService {
       method: "POST",
       url: "/lab/removeLab",
       query: {
-        "id": id
+        id: id,
       },
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -46,11 +47,24 @@ export class LabControllerService {
       body: requestBody,
       mediaType: "application/json",
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
-
+  public static getAvailableLabs(
+    requestBody: LabAvaliableGetDTO,
+    token: string
+  ): CancelablePromise<ResponseDataObject> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/lab/getAvailableLabs",
+      body: requestBody,
+      mediaType: "application/json",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
   /**
    * @param requestBody
    * @returns ResponseDataObject OK
@@ -66,7 +80,7 @@ export class LabControllerService {
       body: requestBody,
       mediaType: "application/json",
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -84,10 +98,10 @@ export class LabControllerService {
       method: "GET",
       url: "/lab/getLabsByType",
       query: {
-        "type": type
+        type: type,
       },
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -105,10 +119,10 @@ export class LabControllerService {
       method: "GET",
       url: "/lab/getLabsByNumberPrefix",
       query: {
-        "numberPrefix": numberPrefix
+        numberPrefix: numberPrefix,
       },
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -126,10 +140,10 @@ export class LabControllerService {
       method: "GET",
       url: "/lab/getLabsByNamePrefix",
       query: {
-        "namePrefix": namePrefix
+        namePrefix: namePrefix,
       },
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -147,10 +161,10 @@ export class LabControllerService {
       method: "GET",
       url: "/lab/getLabsByLeastEquipmentNum",
       query: {
-        "equipmentNum": equipmentNum
+        equipmentNum: equipmentNum,
       },
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -169,7 +183,7 @@ export class LabControllerService {
       method: "GET",
       url: "/lab/getLabsByLabAdminId",
       query: {
-        "lab_admin_id": labAdminId
+        lab_admin_id: labAdminId,
       },
       headers: {
         Authorization: `Bearer ${token}`,
@@ -190,10 +204,10 @@ export class LabControllerService {
       method: "GET",
       url: "/lab/getLabById",
       query: {
-        "id": id
+        id: id,
       },
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -202,12 +216,14 @@ export class LabControllerService {
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
-  public static getAllLabs(token: string): CancelablePromise<ResponseDataObject> {
+  public static getAllLabs(
+    token: string
+  ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/lab/getAllLabs",
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
   }

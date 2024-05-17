@@ -17,13 +17,13 @@
 }
 
 #basicLayout .header {
-  background: dodgerblue;
+  //background: dodgerblue;
   margin-bottom: 10px;
   box-shadow: #eee 1px 1px 5px;
 }
 
 #basicLayout .content {
-  background: linear-gradient(to right, #aaa, #fff);
+  //background: linear-gradient(to right, #aaa, #fff);
   margin-bottom: 10px;
   padding: 20px;
 }

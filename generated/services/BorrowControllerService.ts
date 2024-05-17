@@ -14,17 +14,22 @@ import { request as __request } from "../core/request";
 export class BorrowControllerService {
   /**
    * @param id
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
   public static removeBorrow(
-    id: number
+    id: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/borrow/removeBorrow",
       query: {
         id: id,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -35,23 +40,29 @@ export class BorrowControllerService {
    * @throws ApiError
    */
   public static importBorrow(
-    requestBody: BorrowImportDTO
+    requestBody: BorrowImportDTO,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/borrow/importBorrow",
       body: requestBody,
       mediaType: "application/json",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
   /**
    * @param borrowCompleteDto
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
   public static completeBorrow(
-    borrowCompleteDto: BorrowCompleteDTO
+    borrowCompleteDto: BorrowCompleteDTO,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
@@ -59,22 +70,30 @@ export class BorrowControllerService {
       query: {
         borrowCompleteDTO: borrowCompleteDto,
       },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
   /**
    * @param requestBody
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
   public static alterBorrow(
-    requestBody: BorrowAlterDTO
+    requestBody: BorrowAlterDTO,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/borrow/alterBorrow",
       body: requestBody,
       mediaType: "application/json",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -84,24 +103,29 @@ export class BorrowControllerService {
    * @throws ApiError
    */
   public static admitBorrow(
-    borrowAdmitDto: BorrowAdmitDTO
+    borrowAdmitDto: BorrowAdmitDTO,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/borrow/admitBorrow",
-      query: {
-        borrowAdmitDTO: borrowAdmitDto,
+      body: borrowAdmitDto,
+      mediaType: "application/json",
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
   }
 
   /**
    * @param week
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
   public static getBorrowsByWeek(
-    week: string
+    week: string,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
@@ -109,22 +133,30 @@ export class BorrowControllerService {
       query: {
         week: week,
       },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
   /**
    * @param studentId
+   * @param token
    * @returns ResponseDataObject OK
    * @throws ApiError
    */
   public static getBorrowsByTeacherId(
-    studentId: number
+    studentId: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/borrow/getBorrowsByStudentId",
       query: {
         studentId: studentId,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -135,13 +167,17 @@ export class BorrowControllerService {
    * @throws ApiError
    */
   public static getBorrowsByStatus(
-    status: number
+    status: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/borrow/getBorrowsByStatus",
       query: {
         status: status,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -152,13 +188,17 @@ export class BorrowControllerService {
    * @throws ApiError
    */
   public static getBorrowsBySemester(
-    semester: string
+    semester: string,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/borrow/getBorrowsBySemester",
       query: {
         semester: semester,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
   }
@@ -169,13 +209,17 @@ export class BorrowControllerService {
    * @throws ApiError
    */
   public static getBorrowsByLabId(
-    labId: number
+    labId: number,
+    token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "GET",
       url: "/borrow/getBorrowsByLabId",
       query: {
         labId: labId,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     });
   }

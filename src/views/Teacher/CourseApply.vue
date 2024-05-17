@@ -66,12 +66,12 @@
           :wrapper-col="{ span: 18 }"
         >
           <a-select v-model="newCourse.session">
-            <a-option value="1-2">1-2</a-option>
-            <a-option value="3-5">3-5</a-option>
-            <a-option value="6-7">6-7</a-option>
-            <a-option value="8-9">8-9</a-option>
-            <a-option value="10-12">10-12</a-option>
-            <a-option value="13-15">13-15</a-option>
+            <a-option
+              v-for="session in sessions"
+              :key="session"
+              :value="session"
+              >{{ session }}
+            </a-option>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -151,12 +151,12 @@
           :wrapper-col="{ span: 18 }"
         >
           <a-select v-model="currentCourse.session">
-            <a-option value="1-2">1-2</a-option>
-            <a-option value="3-5">3-5</a-option>
-            <a-option value="6-7">6-7</a-option>
-            <a-option value="8-9">8-9</a-option>
-            <a-option value="10-12">10-12</a-option>
-            <a-option value="13-15">13-15</a-option>
+            <a-option
+              v-for="session in sessions"
+              :key="session"
+              :value="session"
+              >{{ session }}
+            </a-option>
           </a-select>
         </a-form-item>
         <a-form-item
@@ -192,6 +192,7 @@ import store from "@/store";
 import {
   CourseControllerService,
   SemesterControllerService,
+  SessionControllerService,
 } from "../../../generated";
 import message from "@arco-design/web-vue/es/message";
 
@@ -327,6 +328,7 @@ export default {
           currentCourse.value,
           localStorage.getItem("token")
         );
+        console.log(currentCourse.value);
         if (res.status === 100) {
           alert("修改成功");
         } else {
@@ -359,9 +361,18 @@ export default {
         alert("已排课的申请无法删除");
       }
     };
+    const sessions = ref();
+    const getSessions = async () => {
+      const res = await SessionControllerService.getAllSessions(
+        localStorage.getItem("token")
+      );
+      const sessionRes = res.data.map((item) => item.session);
+      sessions.value = sessionRes;
+    };
     onMounted(() => {
       getSem();
       getApplyData();
+      getSessions();
     });
     return {
       newCourse,
@@ -372,6 +383,7 @@ export default {
       cancelAddCourse,
       currentCourse,
       columns,
+      sessions,
       applyData,
       editApplication,
       deleteApplication,

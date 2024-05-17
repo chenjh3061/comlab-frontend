@@ -1,6 +1,6 @@
 <template>
   <div id="userLoginView">
-    <a-card>
+    <a-card class="loginCard">
       <div id="welcomeText">欢迎来到计算机系实验管理平台！</div>
       <a-form
         style="max-width: 480px; margin: 0 auto"
@@ -22,14 +22,20 @@
             placeholder="请输入密码"
           />
         </a-form-item>
-        <a-radio-group v-model="userRole">
+        <a-radio-group class="chooseBar" v-model="userRole">
           <a-radio value="0">管理员</a-radio>
           <a-radio value="2">教师</a-radio>
           <a-radio value="3">实验员</a-radio>
           <a-radio value="1">学生</a-radio>
         </a-radio-group>
         <a-form-item>
-          <a-button type="primary" html-type="submit" style="width: 120px"
+          <a-button
+            class="loginButton"
+            type="primary"
+            shape="round"
+            size="large"
+            html-type="submit"
+            style="width: 120px"
             >登录
           </a-button>
         </a-form-item>
@@ -106,5 +112,15 @@ const handleSubmit = async () => {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI",
     "HelveticaNeue-Light", system-ui, "Ubuntu", "Droid Sans", sans-serif;
   font-size: 20px;
+}
+.loginCard {
+  margin: 0 auto;
+  max-width: 1600px;
+}
+.loginButton {
+  margin: 30px auto 0;
+}
+.chooseBar {
+  margin: 0 auto;
 }
 </style>

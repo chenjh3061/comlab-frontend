@@ -9,10 +9,17 @@
   <div>
     <h2>实验室借用申请</h2>
     <a-button type="primary" @click="addApply">新增申请</a-button>
+    <a-button @click="check">check</a-button>
     <h3>已有的个人申请：</h3>
     <a-table id="apply" :columns="applyColumns" :data="applyData">
       <template #action="{ record }">
-        <a-button @click="editApply(record)">修改申请</a-button>
+        <a-button type="second" @click="editApply(record)">修改申请</a-button>
+        <a-button status="danger" @click="deleteApply(record)"
+          >撤回申请</a-button
+        >
+        <a-button status="success" @click="completeApply(record)"
+          >完成使用</a-button
+        >
       </template>
     </a-table>
     <a-modal
@@ -30,11 +37,18 @@
           <a-input v-model="newApply.week" />
         </a-form-item>
         <a-form-item
-          label="申请节次"
+          label="节次"
           :label-col="{ span: 4 }"
           :wrapper-col="{ span: 18 }"
         >
-          <a-input v-model="newApply.session" />
+          <a-select v-model="newApply.session">
+            <a-option
+              v-for="session in sessions"
+              :key="session"
+              :value="session"
+              >{{ session }}
+            </a-option>
+          </a-select>
         </a-form-item>
         <a-form-item
           label="实验室编号"
@@ -58,6 +72,56 @@
         </a-form-item>
       </a-form>
     </a-modal>
+    <a-modal
+      title="修改申请"
+      v-model:visible="editApplyModalVisible"
+      @ok="handleEditApply"
+      @cancel="cancelEditApply"
+    >
+      <a-form ref="editApplyForm" :model="editApplyData">
+        <a-form-item
+          label="申请周次"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-input v-model="editApplyData.week" />
+        </a-form-item>
+        <a-form-item
+          label="节次"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-select v-model="editApplyData.session">
+            <a-option
+              v-for="session in sessions"
+              :key="session"
+              :value="session"
+              >{{ session }}
+            </a-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+          label="实验室编号"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-select v-model="editApplyData.labId">
+            <a-option value="001">软件实验室1</a-option>
+            <a-option value="002">软件实验室2</a-option>
+            <a-option value="003">硬件实验室1</a-option>
+            <a-option value="004">硬件实验室1</a-option>
+            <a-option value="005">网络实验室1</a-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item
+          label="申请原因"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-textarea v-model="editApplyData.reason" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
@@ -66,8 +130,11 @@ import { onMounted, ref } from "vue";
 import {
   BorrowControllerService,
   SemesterControllerService,
+  SessionControllerService,
 } from "../../../generated";
 import store from "@/store";
+import message from "@arco-design/web-vue/es/message";
+import a from "vuex-persistedstate";
 
 export default {
   name: "LabApplyView",
@@ -79,58 +146,70 @@ export default {
       labId: "",
       reason: "",
       semester: "",
-      startingWeek: "",
-      endingWeek: "",
+      Week: "",
       session: "",
+    });
+    const editApplyModalVisible = ref(false);
+    const editApplyData = ref({
+      id: store.state.user.loginUser.id,
+      week: " ",
+      session: " ",
+      semester: " ",
+      labId: " ",
+      reason: " ",
     });
     const getApply = async () => {
       try {
-        const res = await BorrowControllerService.getBorrowById(
+        const res = await BorrowControllerService.getBorrowsByTeacherId(
           store.state.user.loginUser.id,
           localStorage.getItem("token")
         );
         applyData.value = res.data;
-        newApply.value.semester =
-          await SemesterControllerService.getCurrentSemester(
-            localStorage.getItem("token")
-          ).data.semester;
+        const sem = await SemesterControllerService.getCurrentSemester(
+          localStorage.getItem("token")
+        );
+        newApply.value.semester = sem.data?.semester;
         console.log("applys:", res);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
     };
+    const check = () => {
+      console.log(newApply.value);
+      console.log(store.state.user.loginUser.id);
+    };
     const applyColumns = [
       {
         title: "申请学期",
-        dataIndex: "applySemester",
+        dataIndex: "semester",
       },
       {
         title: "申请学生",
-        dataIndex: "applyStudent",
+        dataIndex: "studentId",
       },
       {
         title: "申请周次",
-        dataIndex: "applyWeek",
+        dataIndex: "week",
       },
       {
         title: "申请节次",
-        dataIndex: "applyClass",
+        dataIndex: "session",
       },
       {
         title: "申请实验室编号",
-        dataIndex: "labNum",
+        dataIndex: "labId",
       },
       {
         title: "申请原因",
-        dataIndex: "applyReason",
+        dataIndex: "reason",
       },
       {
         title: "填报日期",
-        dataIndex: "applyDate",
+        dataIndex: "createTime",
       },
       {
         title: "申请状态",
-        dataIndex: "applyState",
+        dataIndex: "status",
       },
       {
         title: "操作",
@@ -148,7 +227,7 @@ export default {
           newApply.value,
           localStorage.getItem("token")
         );
-        console.log("newApply" + newApply.value);
+        console.log(newApply.value);
         await getApply();
         addApplyModalVisible.value = false;
       } catch (error) {
@@ -162,15 +241,105 @@ export default {
     };
 
     const resetAddApplyForm = () => {
-      newApply.value.name = "";
-      newApply.value.role = "";
-      newApply.value.password = "";
+      newApply.value.name = " ";
+      newApply.value.role = " ";
+      newApply.value.password = " ";
     };
-    const editApply = () => {
-      return 1;
+    const editApply = (record) => {
+      if (record.status !== 0) {
+        alert("申请已被处理，无法修改");
+        return;
+      }
+      editApplyData.value = { ...record };
+      editApplyModalVisible.value = true;
+    };
+
+    const handleEditApply = async () => {
+      try {
+        const sem = await SemesterControllerService.getCurrentSemester(
+          localStorage.getItem("token")
+        );
+        editApplyData.value.semester = sem.data?.semester;
+        const res = await BorrowControllerService.alterBorrow(
+          editApplyData.value,
+          localStorage.getItem("token")
+        );
+        if (res.status === 100) {
+          alert("修改成功");
+        } else {
+          message.error("修改失败!  " + res.message + "  " + res.description);
+        }
+        await getApply();
+        editApplyModalVisible.value = false;
+      } catch (error) {
+        console.error("Error editing Apply:", error);
+      }
+    };
+
+    const cancelEditApply = () => {
+      editApplyModalVisible.value = false;
+      resetEditApplyForm();
+    };
+
+    const resetEditApplyForm = () => {
+      editApplyData.value.id = " ";
+      editApplyData.value.week = " ";
+      editApplyData.value.session = " ";
+      editApplyData.value.labId = " ";
+      editApplyData.value.reason = " ";
+    };
+
+    const deleteApply = async (record) => {
+      if (record.status !== 0) {
+        alert("申请已被处理，无法修改");
+        return;
+      }
+      try {
+        await BorrowControllerService.removeBorrow(
+          record.id,
+          localStorage.getItem("token")
+        );
+        await getApply();
+      } catch (error) {
+        console.error("Error deleting Apply:", error);
+      }
+    };
+    const applyForm = ref({
+      id: " ",
+      status: "",
+    });
+    const completeApply = async (record) => {
+      try {
+        if (record.status !== 1) {
+          alert("尚未处理，无法");
+        }
+        applyForm.value.id = record.id;
+        applyForm.value.status = 2;
+        const res = await BorrowControllerService.admitBorrow(
+          applyForm.value,
+          localStorage.getItem("token")
+        );
+        if (res.status === 100) {
+          alert("审批驳回成功");
+        } else {
+          message.error("操作失败!  " + res.message + "  " + res.description);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    const sessions = ref();
+    const getSessions = async () => {
+      const res = await SessionControllerService.getAllSessions(
+        localStorage.getItem("token")
+      );
+      const sessionRes = res.data.map((item) => item.session);
+      sessions.value = sessionRes;
+      console.log(sessions.value);
     };
     onMounted(() => {
       getApply();
+      getSessions();
     });
     return {
       applyColumns,
@@ -181,6 +350,14 @@ export default {
       handleAddApply,
       cancelAddApply,
       editApply,
+      check,
+      sessions,
+      editApplyData,
+      deleteApply,
+      editApplyModalVisible,
+      handleEditApply,
+      cancelEditApply,
+      completeApply,
     };
   },
 };

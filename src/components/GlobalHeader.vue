@@ -13,11 +13,11 @@
           disabled
         >
           <div class="title-bar">
-            <img
-              class="logo"
-              src="../assets/school_logo.png"
-              alt="school_logo"
-            />
+            <!--            <img-->
+            <!--              class="logo"-->
+            <!--              src="../assets/school_logo.png"-->
+            <!--              alt="school_logo"-->
+            <!--            />-->
             <div class="title">计算机系实验管理平台</div>
           </div>
         </a-menu-item>
@@ -26,12 +26,13 @@
         </a-menu-item>
       </a-menu>
     </a-col>
-    <a-col flex="100px">
-      <div @click="showToken">
+    <a-col class="userInfo" flex="100px">
+      <div class="name" @click="showToken">
         {{ $store.state.user?.loginUser?.username ?? "未登录" }}
-      </div>
-      <div>
-        <a-button v-if="$store.state.user?.loginUser" @click="logout($event)"
+        <a-button
+          type="primary"
+          v-if="$store.state.user?.loginUser"
+          @click="logout($event)"
           >退出登录
         </a-button>
       </div>
@@ -115,7 +116,14 @@ const logout = async (event: MouseEvent) => {
   color: #444;
   margin-left: 16px;
 }
-
+.userInfo {
+  margin-left: 10px;
+}
+.userInfo .name {
+  text-align: center;
+  margin: 10px 30px 10px 0;
+  font-size: 18px;
+}
 .logo {
   height: 48px;
 }

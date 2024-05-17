@@ -78,15 +78,14 @@ export class CourseControllerService {
    * @throws ApiError
    */
   public static admitCourse(
-    courseAdmitDto: CourseAdmitDTO,
+    requestBody: CourseAdmitDTO,
     token: string
   ): CancelablePromise<ResponseDataObject> {
     return __request(OpenAPI, {
       method: "POST",
       url: "/course/admitCourse",
-      query: {
-        courseAdmitDTO: courseAdmitDto,
-      },
+      body: requestBody,
+      mediaType: "application/json",
       headers: {
         Authorization: `Bearer ${token}`
       }

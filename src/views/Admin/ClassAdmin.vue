@@ -11,7 +11,10 @@
     <!-- 申请登记表格 -->
     <a-table :columns="experimentColumns" :data="experimentData">
       <template #action="{ record }">
-        <a-button @click="arrangeExperiment(record)">安排实验课</a-button>
+        <a-button type="primary" @click="arrangeExperiment(record)"
+          >安排实验课</a-button
+        >
+        <a-button status="danger" @click="reject(record)">退回申请</a-button>
       </template>
     </a-table>
 
@@ -22,22 +25,54 @@
       :columns="labScheduleColumns"
       :data="labScheduleData"
     ></a-table>
+
+    <a-modal
+      title="实验排课"
+      v-model:visible="arrangeModalVisible"
+      closable:false
+      @ok="handelArrange"
+      @cancel="cancelArrange"
+    >
+      <a-form ref="arrangeForm" :model="arrangeForm">
+        <a-form-item
+          label="可选实验室"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+        >
+          <a-select v-model="arrangeForm.labId">
+            <a-option v-for="lab in availableLab" :key="lab.id" :value="lab.id"
+              >{{ lab.name }}
+            </a-option>
+          </a-select>
+        </a-form-item>
+      </a-form>
+    </a-modal>
+    <a-modal
+      title="退回申请"
+      v-model:visible="rejectModelVisible"
+      @ok="handelReject"
+      @cancel="cancelReject"
+    >
+      <div class="center-text"><h2>确定退回申请？</h2></div>
+    </a-modal>
   </div>
 </template>
 
 <script>
 import { onMounted, ref } from "vue";
-import { CourseControllerService } from "../../../generated";
+import {
+  CourseControllerService,
+  LabControllerService,
+} from "../../../generated";
+import message from "@arco-design/web-vue/es/message";
 
 export default {
   name: "ExperimentScheduling",
   setup() {
     // 实验课申请登记数据
     const experimentData = ref([]);
-
     // 实验室排课数据
     const labScheduleData = ref([]);
-
     // 实验课申请登记表格列配置
     const experimentColumns = [
       {
@@ -45,8 +80,8 @@ export default {
         dataIndex: "semester",
       },
       {
-        title: "实验室编号",
-        dataIndex: "labId",
+        title: "所需实验室类型",
+        dataIndex: "type",
       },
       {
         title: "开始周次",
@@ -82,7 +117,6 @@ export default {
         slotName: "action",
       },
     ];
-
     // 实验室排课表格列配置
     const labScheduleColumns = [
       {
@@ -90,35 +124,42 @@ export default {
         dataIndex: "semester",
       },
       {
-        title: "实验室名称",
-        dataIndex: "labName",
-      },
-      {
         title: "实验室编号",
         dataIndex: "labId",
       },
       {
-        title: "周次",
-        dataIndex: "week",
+        title: "课程名称",
+        dataIndex: "name",
+      },
+      {
+        title: "开始周次",
+        dataIndex: "startingWeek",
+      },
+      {
+        title: "结束周次",
+        dataIndex: "endingWeek",
       },
       {
         title: "节次",
-        dataIndex: "section",
-      },
-      {
-        title: "课程名",
-        dataIndex: "courseName",
+        dataIndex: "session",
       },
       {
         title: "任课教师",
-        dataIndex: "teacher",
+        dataIndex: "teacherId",
       },
       {
         title: "学生班级",
-        dataIndex: "className",
+        dataIndex: "clazz",
       },
     ];
-
+    const arrangeModalVisible = ref(false);
+    const rejectModelVisible = ref(false);
+    const availableLab = ref([]);
+    const arrangeForm = ref({
+      id: 0,
+      labId: 0,
+      status: 0,
+    });
     const getData = async () => {
       try {
         const res1 = await CourseControllerService.getCoursesByStatus(
@@ -131,28 +172,89 @@ export default {
         );
         experimentData.value = res1.data;
         labScheduleData.value = res2.data;
-        console.log(res1.data);
-        console.log(res2.data);
+        // console.log(res1.data);
+        // console.log(res2.data);
       } catch (e) {
         console.log(e);
       }
     };
     // 安排实验课
-    const arrangeExperiment = (record) => {
-      // 根据实验室类型选择实验室
-      // 根据学生人数和实验室设备数确定分配的实验室
-      // 根据起始周、结束周和已排课情况避免实验室冲突
-      // 更新实验室排课数据
-      labScheduleData.value.push({
-        semester: "2024春季学期",
-        labName: record.labType,
-        labId: "Lab001",
-        week: `${record.startWeek}-${record.endWeek}`,
-        section: "第一节",
-        courseName: record.courseName,
-        teacher: record.teacher,
-        className: "实验班",
-      });
+    const arrangeExperiment = async (record) => {
+      try {
+        arrangeModalVisible.value = true;
+        const queryForm = {
+          type: record.type,
+          semester: record.semester,
+          startingWeek: record.startingWeek,
+          endingWeek: record.endingWeek,
+          session: record.session,
+          studentNum: record.studentNum,
+        };
+        const res = await LabControllerService.getAvailableLabs(
+          queryForm,
+          localStorage.getItem("token")
+        );
+        availableLab.value = res.data;
+        arrangeForm.value = { id: record.id, labId: 0, status: 1 };
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const handelArrange = async () => {
+      try {
+        console.log("arr", arrangeForm.value);
+        const res = await CourseControllerService.admitCourse(
+          arrangeForm.value,
+          localStorage.getItem("token")
+        );
+        if (res.status === 100) {
+          alert("排课成功");
+        } else {
+          message.error("排课失败! " + res.message + " " + res.description);
+        }
+        arrangeModalVisible.value = false;
+        await getData();
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    const cancelArrange = () => {
+      arrangeForm.value = {
+        id: 0,
+        labId: 0,
+        status: 0,
+      };
+      arrangeModalVisible.value = false;
+    };
+
+    const reject = (record) => {
+      rejectModelVisible.value = true;
+      arrangeForm.value = { id: record.id, labId: 0, status: 0 };
+    };
+    const handelReject = async () => {
+      try {
+        const res = await CourseControllerService.admitCourse(
+          arrangeForm.value,
+          localStorage.getItem("token")
+        );
+        if (res.status === 100) {
+          alert("已拒绝");
+        } else {
+          message.error("操作失败! " + res.message + " " + res.description);
+        }
+        rejectModelVisible.value = false;
+        await getData();
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    const cancelReject = () => {
+      arrangeForm.value = {
+        id: 0,
+        labId: 0,
+        status: 0,
+      };
+      rejectModelVisible.value = false;
     };
     onMounted(() => {
       getData();
@@ -163,9 +265,25 @@ export default {
       labScheduleData,
       labScheduleColumns,
       arrangeExperiment,
+      arrangeModalVisible,
+      rejectModelVisible,
+      handelArrange,
+      cancelArrange,
+      arrangeForm,
+      availableLab,
+      reject,
+      handelReject,
+      cancelReject,
     };
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.center-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+</style>

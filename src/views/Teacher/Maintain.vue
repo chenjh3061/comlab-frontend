@@ -15,7 +15,7 @@
       <template #action="{ record }">
         <!-- 自定义操作按钮，可以是编辑、删除等 -->
         <a-button @click="editRepair(record)">编辑</a-button>
-        <a-button @click="deleteRepair(record.id)">删除</a-button>
+        <a-button @click="deleteRepair(record)">删除</a-button>
       </template>
     </a-table>
 
@@ -204,6 +204,10 @@ export default {
     };
 
     const editRepair = (record) => {
+      if (record.status === 2) {
+        alert("本次报修已完成，无法修改");
+        return;
+      }
       currentRepair.value = { ...record };
       editRepairModalVisible.value = true;
     };
@@ -231,10 +235,14 @@ export default {
       editRepairModalVisible.value = false;
     };
 
-    const deleteRepair = async (id) => {
+    const deleteRepair = async (record) => {
+      if (record.status === 2) {
+        alert("本次报修已完成，无法删除");
+        return;
+      }
       try {
         const res = await MaintainControllerService.removeMaintain(
-          id,
+          record.id,
           localStorage.getItem("token")
         );
         if (res.status === 100) {

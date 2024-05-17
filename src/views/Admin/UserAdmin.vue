@@ -84,6 +84,7 @@
       </a-form>
     </a-modal>
     <a-table
+      id="userTable"
       :columns="userColumns"
       :data="userData"
       column-resizable
@@ -457,5 +458,9 @@ export default {
 .custom-filter-footer {
   display: flex;
   justify-content: space-between;
+}
+
+#userTable {
+  max-width: 1500px;
 }
 </style>

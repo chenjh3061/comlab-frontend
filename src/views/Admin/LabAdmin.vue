@@ -20,6 +20,7 @@
 import { onMounted, ref } from "vue";
 import async from "async";
 import { BorrowControllerService } from "../../../generated";
+import message from "@arco-design/web-vue/es/message";
 
 export default {
   name: "LabAdmin",
@@ -76,17 +77,51 @@ export default {
         console.log(e);
       }
     };
-    const approve = (record) => {
-      return 1;
+    const admitForm = ref({
+      id: "",
+      status: "",
+    });
+    const approve = async (record) => {
+      try {
+        admitForm.value.id = record.id;
+        admitForm.value.status = 1;
+        console.log(admitForm.value);
+        const res = await BorrowControllerService.admitBorrow(
+          admitForm.value,
+          localStorage.getItem("token")
+        );
+        if (res.status === 100) {
+          alert("审批通过成功");
+        } else {
+          message.error("操作失败!  " + res.message + "  " + res.description);
+        }
+      } catch (e) {
+        console.log(e);
+      }
     };
-    const reject = (record) => {
-      // 这里可以编写不通过操作的逻辑
+    const reject = async (record) => {
+      try {
+        admitForm.value.id = record.id;
+        admitForm.value.status = 2;
+        const res = await BorrowControllerService.admitBorrow(
+          admitForm.value,
+          localStorage.getItem("token")
+        );
+        if (res.status === 100) {
+          alert("审批驳回成功");
+        } else {
+          message.error("操作失败!  " + res.message + "  " + res.description);
+        }
+      } catch (e) {
+        console.log(e);
+      }
     };
     onMounted(getBorrow);
     return {
       columns,
       dataSource,
       approve,
+      reject,
     };
   },
 };

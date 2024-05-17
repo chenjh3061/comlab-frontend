@@ -32,6 +32,7 @@ export class ComplexQueryController {
       method: "POST",
       url: "/query/getCourseLabSession",
       body: courseLabSessionDTO,
+      mediaType: "application/json",
       headers: {
         Authorization: `Bearer ${token}`,
       },
