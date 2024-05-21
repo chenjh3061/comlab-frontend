@@ -39,7 +39,7 @@
           :label-col="{ span: 4 }"
           :wrapper-col="{ span: 18 }"
         >
-          <a-select v-model="arrangeForm.labId">
+          <a-select v-model="arrangeFormLabId">
             <a-option v-for="lab in availableLab" :key="lab.id" :value="lab.id"
               >{{ lab.name }}
             </a-option>
@@ -155,11 +155,12 @@ export default {
     const arrangeModalVisible = ref(false);
     const rejectModelVisible = ref(false);
     const availableLab = ref([]);
-    const arrangeForm = ref({
+    const arrangeForm = {
       id: 0,
       labId: 0,
       status: 0,
-    });
+    };
+    const arrangeFormLabId = ref(null);
     const getData = async () => {
       try {
         const res1 = await CourseControllerService.getCoursesByStatus(
@@ -194,15 +195,26 @@ export default {
           queryForm,
           localStorage.getItem("token")
         );
+        console.log(record);
         availableLab.value = res.data;
+        // arrangeFormLabId.value = res.data[0].name;
         arrangeForm.value = { id: record.id, labId: 0, status: 1 };
+        // arrangeForm.value.id = record.id;
+        // arrangeForm.value.status = 1;
+        // arrangeForm.value.labId = 0;
+        console.log(arrangeForm.value);
       } catch (error) {
         console.error(error);
       }
     };
     const handelArrange = async () => {
       try {
-        console.log("arr", arrangeForm.value);
+        // console.log(arrangeForm.value);
+        // console.log("arr", arrangeForm.value.id);
+        // console.log("arr", arrangeForm.value.status);
+        // console.log("arr", arrangeForm.value.labId);
+        // console.log("arr", arrangeFormLabId.value);
+        arrangeForm.value.labId = arrangeFormLabId.value;
         const res = await CourseControllerService.admitCourse(
           arrangeForm.value,
           localStorage.getItem("token")
@@ -265,6 +277,7 @@ export default {
       labScheduleData,
       labScheduleColumns,
       arrangeExperiment,
+      arrangeFormLabId,
       arrangeModalVisible,
       rejectModelVisible,
       handelArrange,
