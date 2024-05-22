@@ -9,7 +9,7 @@
   <div>
     <h2>实验室借用申请</h2>
     <a-button type="primary" @click="addApply">新增申请</a-button>
-    <a-button @click="check">check</a-button>
+    <!--    <a-button @click="check">check</a-button>-->
     <h3>已有的个人申请：</h3>
     <a-table id="apply" :columns="applyColumns" :data="applyData">
       <template #action="{ record }">
@@ -311,7 +311,7 @@ export default {
     const completeApply = async (record) => {
       try {
         if (record.status !== 1) {
-          alert("尚未处理，无法");
+          alert("尚未处理，无法完成");
         }
         applyForm.value.id = record.id;
         applyForm.value.status = 2;

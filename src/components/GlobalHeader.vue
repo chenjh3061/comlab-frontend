@@ -82,10 +82,10 @@ const showToken = () => {
 //退出登录
 const logout = async (event: MouseEvent) => {
   try {
-    store.state.loginStatus = false;
-    store.state.token = null;
-    store.state.userInfo = {};
-    localStorage.removeItem("token");
+    // store.state.loginStatus = false;
+    // store.state.token = null;
+    // store.state.userInfo = {};
+    //localStorage.removeItem("token");
     console.log("退出登录：" + store.state.user.loginUser);
     await router.push({
       path: "/user/login",

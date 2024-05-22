@@ -231,7 +231,7 @@ export default {
         localStorage.getItem("token")
       );
       newCourse.value.semester = res.data.semester;
-      console.log("当前学期：" + res.data.semester);
+      console.log("当前学期：" + newCourse.value.semester);
     };
     const addCourseModalVisible = ref(false);
     const getApplyData = async () => {

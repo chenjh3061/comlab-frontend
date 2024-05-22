@@ -214,18 +214,27 @@ export default {
 
     const checkMaintain = async (record) => {
       try {
-        const res = await MaintainControllerService.getMaintainById(
-          record.id,
-          localStorage.getItem("token")
-        );
-        if (res.status === 100) {
-          selectedMaintain.value = res.data;
-          maintainDetailModalVisible.value = true;
-        } else {
-          message.error(
-            "获取维修详情失败! " + res.message + " " + res.description
-          );
-        }
+        // const res = await MaintainControllerService.getMaintainById(
+        //   record.id,
+        //   localStorage.getItem("token")
+        // );
+        // if (res.status === 100) {
+        //   selectedMaintain.value = res.data;
+        //   maintainDetailModalVisible.value = true;
+        // } else {
+        //   message.error(
+        //     "获取维修详情失败! " + res.message + " " + res.description
+        //   );
+        // }
+        selectedMaintain.value = {
+          id: record.id,
+          faultDescription: record.faultDescription,
+          teacherId: record.teacherId,
+          createTime: record.createTime,
+          status: record.status,
+        };
+        maintainDetailModalVisible.value = true;
+        console.log(selectedMaintain.value);
       } catch (error) {
         console.error("Error:", error);
       }
