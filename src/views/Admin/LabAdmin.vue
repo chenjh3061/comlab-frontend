@@ -9,6 +9,9 @@
     :columns="columns"
     :data="dataSource"
   >
+    <template #status="{ record }">
+      {{ formatStatus(record.status) }}
+    </template>
     <template #action="{ record }">
       <a-button type="primary" @click="approve(record)">通过</a-button>
       <a-button type="warning" @click="reject(record)">不通过</a-button>
@@ -57,6 +60,7 @@ export default {
       {
         title: "申请状态",
         dataIndex: "status",
+        slotName: "status",
       },
       {
         title: "审批操作",
@@ -116,12 +120,22 @@ export default {
         console.log(e);
       }
     };
+    const formatStatus = (status) => {
+      return status == 0
+        ? "未审核"
+        : status == 1
+        ? "通过"
+        : status == 2
+        ? "驳回"
+        : "使用完毕";
+    };
     onMounted(getBorrow);
     return {
       columns,
       dataSource,
       approve,
       reject,
+      formatStatus,
     };
   },
 };

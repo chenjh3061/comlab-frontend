@@ -10,6 +10,12 @@
     >
     <h3>已有的实验课申请：</h3>
     <a-table :columns="columns" :data="applyData" row-key="id">
+      <template #type="{ record }">
+        {{ formatType(record.type) }}
+      </template>
+      <template #status="{ record }">
+        {{ formatStatus(record.status) }}
+      </template>
       <template #action="{ record }">
         <a-button type="success" @click="editApplication(record)"
           >编辑</a-button
@@ -297,14 +303,14 @@ export default {
     const columns = [
       { title: "学期", dataIndex: "semester", key: "semester" },
       { title: "课程名称", dataIndex: "name", key: "name" },
-      { title: "实验室类型", dataIndex: "type", key: "type" },
+      { title: "实验室类型", dataIndex: "type", key: "type", slotName: "type" },
       { title: "起始周", dataIndex: "startingWeek", key: "startingWeek" },
       { title: "结束周", dataIndex: "endingWeek", key: "endingWeek" },
       { title: "节次", dataIndex: "session", key: "session" },
       { title: "学生数量", dataIndex: "studentNum", key: "studentNum" },
       { title: "专业", dataIndex: "major", key: "major" },
       { title: "班级", dataIndex: "clazz", key: "clazz" },
-      { title: "状态", dataIndex: "status", key: "status" },
+      { title: "状态", ataIndex: "status", key: "status", slotName: "status" },
       {
         title: "操作",
         key: "action",
@@ -369,6 +375,12 @@ export default {
       const sessionRes = res.data.map((item) => item.session);
       sessions.value = sessionRes;
     };
+    const formatType = (type) => {
+      return type == 0 ? "软件实验室" : type == 1 ? "硬件实验室" : "网络实验室";
+    };
+    const formatStatus = (status) => {
+      return status == 0 ? "未审批" : "已排课";
+    };
     onMounted(() => {
       getSem();
       getApplyData();
@@ -389,6 +401,8 @@ export default {
       deleteApplication,
       handleEditCourse,
       cancelEditCourse,
+      formatType,
+      formatStatus,
     };
   },
 };

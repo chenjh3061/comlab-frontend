@@ -12,6 +12,9 @@
     <!--    <a-button @click="check">check</a-button>-->
     <h3>已有的个人申请：</h3>
     <a-table id="apply" :columns="applyColumns" :data="applyData">
+      <template #status="{ record }">
+        {{ formatStatus(record.status) }}
+      </template>
       <template #action="{ record }">
         <a-button type="second" @click="editApply(record)">修改申请</a-button>
         <a-button status="danger" @click="deleteApply(record)"
@@ -210,6 +213,7 @@ export default {
       {
         title: "申请状态",
         dataIndex: "status",
+        slotName: "status",
       },
       {
         title: "操作",
@@ -337,6 +341,15 @@ export default {
       sessions.value = sessionRes;
       console.log(sessions.value);
     };
+    const formatStatus = (status) => {
+      return status == 0
+        ? "未审核"
+        : status == 1
+        ? "通过"
+        : status == 2
+        ? "驳回"
+        : "使用完毕";
+    };
     onMounted(() => {
       getApply();
       getSessions();
@@ -358,6 +371,7 @@ export default {
       handleEditApply,
       cancelEditApply,
       completeApply,
+      formatStatus,
     };
   },
 };

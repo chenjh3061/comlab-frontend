@@ -90,6 +90,9 @@
       column-resizable
       @change="handleChange"
     >
+      <template #role="{ record }">
+        {{ formatRole(record.role) }}
+      </template>
       <template
         #name-filter="{
           filterValue,
@@ -272,6 +275,7 @@ export default {
         title: "角色",
         dataIndex: "role",
         key: "role",
+        slotName: "role",
         filterable: {
           filters: [
             {
@@ -413,6 +417,15 @@ export default {
     const getToken = () => {
       console.log(localStorage.getItem("token"));
     };
+    const formatRole = (role) => {
+      return role == 0
+        ? "管理员"
+        : role == 1
+        ? "学生"
+        : role == 2
+        ? "教师"
+        : "实验员";
+    };
     onMounted(() => {
       getUser();
       getToken();
@@ -441,6 +454,7 @@ export default {
       deleteUser,
       showAddUserModal,
       selectedUser,
+      formatRole,
     };
   },
 };

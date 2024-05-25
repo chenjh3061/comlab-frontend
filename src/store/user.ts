@@ -26,9 +26,6 @@ export default {
       console.log(res);
       if (res.status === 100) {
         commit("updateUser", res.data);
-        //console.log("登录响应：" + JSON.stringify(res));
-        //console.log(store.state.user.loginUser);
-        // console.log("token: " + token);
         const role = store.state.user.loginUser.role;
         switch (role) {
           case 0:

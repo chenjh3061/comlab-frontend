@@ -5,6 +5,9 @@
   <div>
     <h3>设备报修处理：</h3>
     <a-table :columns="maintainColumns" :data="maintainData" bordered>
+      <template #status="{ record }">
+        {{ formatStatus(record.status) }}
+      </template>
       <template #action="{ record }">
         <a-button type="primary" @click="startMaintenance(record)"
           >开始维修
@@ -93,6 +96,7 @@ export default {
       {
         title: "维修状态",
         dataIndex: "status",
+        slotName: "status",
       },
       {
         title: "操作",
@@ -244,7 +248,9 @@ export default {
       maintainDetailModalVisible.value = false;
       selectedMaintain.value = null;
     };
-
+    const formatStatus = (status) => {
+      return status == 0 ? "未维修" : status == 1 ? "维修中" : "已维修";
+    };
     onMounted(getDatas);
 
     return {
@@ -262,6 +268,7 @@ export default {
       handleCompleteApply,
       cancelCompleteApply,
       cancelMaintainDetail,
+      formatStatus,
     };
   },
 };

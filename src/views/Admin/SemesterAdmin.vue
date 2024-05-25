@@ -8,6 +8,9 @@
       <template #default>添加学期</template>
     </a-button>
     <a-table column-resizable :columns="semColumns" :data="semData">
+      <template #status="{ record }">
+        {{ formatStatus(record.status) }}
+      </template>
       <template #action="{ record }">
         <a-popconfirm
           content="确定将本学期设置为当前学期吗?"
@@ -124,6 +127,7 @@ export default {
         title: "是否为当前学期",
         dataIndex: "status",
         key: "status",
+        slotName: "status",
       },
       {
         title: "操作",
@@ -223,7 +227,9 @@ export default {
       // 实现设置为当前学期操作
       console.log("Set Current Semester:", record);
     };
-
+    const formatStatus = (status) => {
+      return status == 0 ? "否" : "是";
+    };
     onMounted(() => {
       getSem();
     });
@@ -245,6 +251,7 @@ export default {
       deleteSem,
       handleSetCurrentSem,
       cancelAddSem,
+      formatStatus,
     };
   },
 };

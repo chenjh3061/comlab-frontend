@@ -13,11 +13,6 @@
           disabled
         >
           <div class="title-bar">
-            <!--            <img-->
-            <!--              class="logo"-->
-            <!--              src="../assets/school_logo.png"-->
-            <!--              alt="school_logo"-->
-            <!--            />-->
             <div class="title">计算机系实验管理平台</div>
           </div>
         </a-menu-item>

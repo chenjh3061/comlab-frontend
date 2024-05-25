@@ -12,6 +12,9 @@
       row-key="id"
       @change="handleChange"
     >
+      <template #status="{ record }">
+        {{ format(record.status) }}
+      </template>
       <template #action="{ record }">
         <!-- 自定义操作按钮，可以是编辑、删除等 -->
         <a-button @click="editRepair(record)">编辑</a-button>
@@ -131,6 +134,7 @@ export default {
         title: "状态",
         dataIndex: "status",
         key: "status",
+        slotName: "status",
       },
       {
         title: "操作",
@@ -256,6 +260,11 @@ export default {
       }
     };
 
+    const format = (status) => {
+      console.log("Formatting record:", status);
+      return status == 0 ? "未维修" : status == 1 ? "正在维修" : "维修完成";
+    };
+
     onMounted(() => {
       getMaintain();
       getLabs();
@@ -269,6 +278,7 @@ export default {
       addRepairModalVisible,
       editRepairModalVisible,
       newRepair,
+      format,
       currentRepair,
       handleChange,
       showAddRepairModal,
